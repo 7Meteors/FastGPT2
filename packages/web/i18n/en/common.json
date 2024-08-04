@@ -439,6 +439,7 @@
       "Intro Placeholder": "This dataset has no introduction~",
       "Manual collection": "Manual dataset",
       "My Dataset": "My dataset",
+      "My Graph": "My Graph",
       "Name": "Dataset name",
       "Query extension intro": "Enabling the question optimization feature can improve the accuracy of dataset searches during continuous dialogue. After enabling this feature, AI will complete missing information based on conversation records when searching the dataset.",
       "Quote Length": "Quote content length",
@@ -905,6 +906,7 @@
     "Account": "Account",
     "Chat": "Chat",
     "Datasets": "Knowledge Base",
+    "Graph": "Knowledge Graph",
     "Studio": "Studio",
     "Tools": "Tools"
   },
