@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Flex, Image, Button, useDisclosure, Grid, GridItem } from '@chakra-ui/react';
+import { Box, Flex, Image, Button, useDisclosure, Grid, GridItem, Tabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import PageContainer from '@/components/PageContainer';
 import { useTranslation } from 'next-i18next';
@@ -74,84 +74,25 @@ const Dataset = () => {
   return (
     <Flex p={4}>
       <Flex flexGrow={1} flexDirection="column">
-        <Flex alignItems={'flex-start'} justifyContent={'space-between'}>
-          <ParentPaths
-            paths={paths}
-            FirstPathDom={
-              <Flex flex={1} alignItems={'center'}>
-                <Image src={'/imgs/workflow/db.png'} alt={''} mr={2} h={'24px'} />
-                <Box className="textlg" letterSpacing={1} fontSize={'24px'} fontWeight={'bold'}>
-                  {t('common:core.dataset.My Graph')}
-                </Box>
-              </Flex>
-            }
-            onClick={(e) => {
-              router.push({
-                query: {
-                  parentId: e
-                }
-              });
-            }}
-          />
-          {userInfo?.team?.permission.hasWritePer && (
-            <MyMenu
-              offset={[-30, 5]}
-              width={120}
-              Button={null}
-              menuList={[
-                {
-                  children: [
-                    {
-                      label: (
-                        <Flex>
-                          <MyIcon name={FolderIcon} w={'20px'} mr={1} />
-                          {t('common:Folder')}
-                        </Flex>
-                      ),
-                      onClick: () => setEditFolderData({})
-                    },
-                    {
-                      label: (
-                        <Flex>
-                          <Image src={'/imgs/workflow/db.png'} alt={''} w={'20px'} mr={1} />
-                          {t('common:core.dataset.Dataset')}
-                        </Flex>
-                      ),
-                      onClick: onOpenCreateModal
-                    }
-                  ]
-                }
-              ]}
-            />
-          )}
-        </Flex>
-        <Box flexGrow={1}>
-          <Grid
-            flexGrow={1}
-            py={5}
-            gridTemplateColumns={['1fr', 'repeat(2,1fr)', 'repeat(3,1fr)', 'repeat(4,1fr)']}
-            gridGap={5}
-            userSelect={'none'}
-          >
-            <BlockWrapper>
-              <StatisticalGraphA />
-            </BlockWrapper>
-            <BlockWrapper>
-              <StatisticalGraphB />
-            </BlockWrapper>
-            <BlockWrapper>
-              <StatisticalGraphC />
-            </BlockWrapper>
-            <BlockWrapper>
-              <StatisticalGraphD />
-            </BlockWrapper>
-            <GridItem colSpan={4}>
-              <BlockWrapper>
-                <RelationGraph />
-              </BlockWrapper>
-            </GridItem>
-          </Grid>
-        </Box>
+        <Tabs>
+          <TabList>
+            <Tab>One</Tab>
+            <Tab>Two</Tab>
+            <Tab>Three</Tab>
+          </TabList>
+
+          <TabPanels>
+            <TabPanel>
+              <p>one!</p>
+            </TabPanel>
+            <TabPanel>
+              <p>two!</p>
+            </TabPanel>
+            <TabPanel>
+              <p>three!</p>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </Flex>
     </Flex>
   );

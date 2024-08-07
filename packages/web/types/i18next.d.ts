@@ -7,6 +7,7 @@ import publish from '../i18n/zh/publish.json';
 import workflow from '../i18n/zh/workflow.json';
 import user from '../i18n/zh/user.json';
 import chat from '../i18n/zh/chat.json';
+import graph from '../i18n/zh/graph.json';
 
 export interface I18nNamespaces {
   common: typeof common;
@@ -17,6 +18,7 @@ export interface I18nNamespaces {
   workflow: typeof workflow;
   user: typeof user;
   chat: typeof chat;
+  graph: typeof graph;
 }
 
 export type I18nNsType = (keyof I18nNamespaces)[];
@@ -28,11 +30,12 @@ export type I18nPublishKey = NestedKeyOf<I18nNamespaces['publish']>;
 export type I18nWorkflowKey = NestedKeyOf<I18nNamespaces['workflow']>;
 export type I18nUserKey = NestedKeyOf<I18nNamespaces['user']>;
 export type I18nChatKey = NestedKeyOf<I18nNamespaces['chat']>;
+export type I18nGraphKey = NestedKeyOf<I18nNamespaces['graph']>;
 
 export type NestedKeyOf<ObjectType extends object> = {
   [Key in keyof ObjectType & (string | number)]: ObjectType[Key] extends object
-    ? `${Key}` | `${Key}.${NestedKeyOf<ObjectType[Key]>}`
-    : `${Key}`;
+  ? `${Key}` | `${Key}.${NestedKeyOf<ObjectType[Key]>}`
+  : `${Key}`;
 }[keyof ObjectType & (string | number)];
 
 export type ParseKeys<Ns extends keyof I18nNamespaces = keyof I18nNamespaces> = {
@@ -46,7 +49,7 @@ export type I18nKeyFunction = {
 declare module 'i18next' {
   interface CustomTypeOptions {
     returnNull: false;
-    defaultNS: ['common', 'dataset', 'app', 'file', 'publish', 'workflow', 'user', 'chat'];
+    defaultNS: ['common', 'dataset', 'app', 'file', 'publish', 'workflow', 'user', 'chat', 'graph'];
     resources: I18nNamespaces;
   }
 }
