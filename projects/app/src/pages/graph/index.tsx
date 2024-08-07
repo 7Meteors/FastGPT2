@@ -35,7 +35,7 @@ const Account = ({ currentTab }: { currentTab: TabEnum }) => {
       icon: 'core/dataset/datasetLight',
       label: t('graph:tabs.Dataset'),
       value: TabEnum.dataset
-    },
+    }
   ];
 
   const router = useRouter();

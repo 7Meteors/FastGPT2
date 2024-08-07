@@ -6,3 +6,12 @@ body select {
 .chakra-tooltip {
   font-size: var(--chakra-fontSizes-xs) !important;
 }
+
+.graph-table {
+  .ant-pro-card-body {
+    padding: 0;
+  }
+  .ant-pro-card {
+    background-color: transparent;
+  }
+}

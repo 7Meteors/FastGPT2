@@ -2,5 +2,10 @@
   "tabs": {
     "Dashboard": "数据看板",
     "Dataset": "数据管理"
+  },
+  "dataset": {
+    "Event class": "事件大类",
+    "Event subclass": "事件小类",
+    "Event connection": "事件关联"
   }
 }

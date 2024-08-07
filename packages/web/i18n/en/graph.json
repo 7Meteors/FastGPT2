@@ -2,5 +2,10 @@
   "tabs": {
     "Dashboard": "Dashboard",
     "Dataset": "Dataset"
+  },
+  "dataset": {
+    "Event class": "Event class",
+    "Event subclass": "Event subclass",
+    "Event connection": "Event connection"
   }
 }

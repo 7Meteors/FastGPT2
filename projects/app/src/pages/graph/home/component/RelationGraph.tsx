@@ -280,7 +280,7 @@ const RelationGraph: React.FC = () => {
       notMerge={true}
       lazyUpdate={true}
       theme={'theme_name'}
-      style={{ height: 'calc(100vh - 480px)', minHeight: 700 }}
+      style={{ height: 'calc(100vh - 420px)', minHeight: 500 }}
     />
   );
 };

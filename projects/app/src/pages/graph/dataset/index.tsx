@@ -1,95 +1,225 @@
 import React, { useState } from 'react';
-import { Box, Flex, Image, Button, useDisclosure, Grid, GridItem, Tabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
+import { Flex, useDisclosure, Tabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import PageContainer from '@/components/PageContainer';
 import { useTranslation } from 'next-i18next';
 import { serviceSideProps } from '@/web/common/utils/i18n';
-import ParentPaths from '@/components/common/folder/Path';
-import List from './component/List';
 import { DatasetsContext } from './context';
 import DatasetContextProvider from './context';
 import { useContextSelector } from 'use-context-selector';
-import MyMenu from '@fastgpt/web/components/common/MyMenu';
-import { AddIcon } from '@chakra-ui/icons';
 import { useUserStore } from '@/web/support/user/useUserStore';
-import MyIcon from '@fastgpt/web/components/common/Icon';
-import { FolderIcon } from '@fastgpt/global/common/file/image/constants';
 import { EditFolderFormType } from '@fastgpt/web/components/common/MyModal/EditFolderModal';
-import dynamic from 'next/dynamic';
-import { postCreateDatasetFolder, resumeInheritPer } from '@/web/core/dataset/api';
-import FolderSlideCard from '@/components/common/folder/SlideCard';
-import {
-  DatasetDefaultPermissionVal,
-  DatasetPermissionList
-} from '@fastgpt/global/support/permission/dataset/constant';
-import {
-  postUpdateDatasetCollaborators,
-  deleteDatasetCollaborators,
-  getCollaboratorList
-} from '@/web/core/dataset/api/collaborator';
 import { useSystem } from '@fastgpt/web/hooks/useSystem';
-import RelationGraph from './component/RelationGraph';
-import BlockWrapper from './component/BlockWrapper';
-import StatisticalGraph1 from './component/StatisticalGraph1';
-import StatisticalGraphA from './component/StatisticalGraphA';
-import StatisticalGraphB from './component/StatisticalGraphB';
-import StatisticalGraphC from './component/StatisticalGraphC';
-import StatisticalGraphD from './component/StatisticalGraphD';
+import type { ProColumns } from '@ant-design/pro-components';
+import { EditableProTable, ProFormField, ProFormRadio } from '@ant-design/pro-components';
+import GraphTable from './component/GraphTable';
 
-const EditFolderModal = dynamic(
-  () => import('@fastgpt/web/components/common/MyModal/EditFolderModal')
-);
-
-const CreateModal = dynamic(() => import('./component/CreateModal'));
+type DataSourceType = {
+  id: React.Key;
+  title?: string;
+  readonly?: string;
+  decs?: string;
+  state?: string;
+  created_at?: number;
+  update_at?: number;
+  children?: DataSourceType[];
+};
 
 const Dataset = () => {
-  const { isPc } = useSystem();
   const { t } = useTranslation();
-  const router = useRouter();
-  const { parentId } = router.query as { parentId: string };
-
-  const {
-    myDatasets,
-    paths,
-    isFetchingDatasets,
-    refetchPaths,
-    loadMyDatasets,
-    refetchFolderDetail,
-    folderDetail,
-    setEditedDataset,
-    setMoveDatasetId,
-    onDelDataset,
-    onUpdateDataset
-  } = useContextSelector(DatasetsContext, (v) => v);
-  const { userInfo } = useUserStore();
-
-  const [editFolderData, setEditFolderData] = useState<EditFolderFormType>();
-
-  const {
-    isOpen: isOpenCreateModal,
-    onOpen: onOpenCreateModal,
-    onClose: onCloseCreateModal
-  } = useDisclosure();
 
   return (
-    <Flex p={4}>
+    <Flex p={4} className="graph-table">
       <Flex flexGrow={1} flexDirection="column">
         <Tabs>
           <TabList>
-            <Tab>One</Tab>
-            <Tab>Two</Tab>
-            <Tab>Three</Tab>
+            <Tab>{t('graph:dataset.Event class')}</Tab>
+            <Tab>{t('graph:dataset.Event subclass')}</Tab>
+            <Tab>{t('graph:dataset.Event connection')}</Tab>
           </TabList>
 
           <TabPanels>
             <TabPanel>
-              <p>one!</p>
+              <GraphTable
+                title="数据大类"
+                initData={[
+                  {
+                    id: 0,
+                    name: '交通管理',
+                    desc: '交通管理相关'
+                  },
+                  {
+                    id: 1,
+                    name: '环境保护',
+                    desc: '环境保护相关'
+                  },
+                  {
+                    id: 2,
+                    name: '城市规划',
+                    desc: '城市规划相关'
+                  },
+                  {
+                    id: 3,
+                    name: '公共服务',
+                    desc: '公共服务相关'
+                  },
+                  {
+                    id: 4,
+                    name: '消费者权益',
+                    desc: '消费者权益相关'
+                  }
+                ]}
+              />
             </TabPanel>
             <TabPanel>
-              <p>two!</p>
+              <GraphTable
+                title="数据小类"
+                initData={[
+                  {
+                    id: 0,
+                    name: '假冒伪劣产品',
+                    desc: '假冒伪劣产品相关，包括XXX等等'
+                  },
+                  {
+                    id: 1,
+                    name: '售后服务不佳',
+                    desc: '售后服务不佳相关，包括XXX等等'
+                  },
+                  {
+                    id: 2,
+                    name: '食品安全问题',
+                    desc: '食品安全问题相关，包括XXX等等'
+                  },
+                  {
+                    id: 3,
+                    name: '价格欺诈',
+                    desc: '价格欺诈相关，包括XXX等等'
+                  },
+                  {
+                    id: 4,
+                    name: '商品虚假宣传',
+                    desc: '商品虚假宣传相关，包括XXX等等'
+                  },
+                  {
+                    id: 5,
+                    name: '工业废水排放',
+                    desc: '工业废水排放相关，包括XXX等等'
+                  },
+                  {
+                    id: 6,
+                    name: '空气污染',
+                    desc: '空气污染相关，包括XXX等等'
+                  },
+                  {
+                    id: 7,
+                    name: '噪音扰民',
+                    desc: '噪音扰民相关，包括XXX等等'
+                  },
+                  {
+                    id: 8,
+                    name: '非法砍伐森林',
+                    desc: '非法砍伐森林相关，包括XXX等等'
+                  },
+                  {
+                    id: 9,
+                    name: '土壤污染',
+                    desc: '土壤污染相关，包括XXX等等'
+                  },
+                  {
+                    id: 10,
+                    name: '野生动物保护',
+                    desc: '野生动物保护相关，包括XXX等等'
+                  }
+                ]}
+              />
             </TabPanel>
             <TabPanel>
-              <p>three!</p>
+              <GraphTable
+                title="数据关联"
+                newColumns={[
+                  {
+                    title: `数据关联ID`,
+                    dataIndex: 'id',
+                    tooltip: '唯一标识',
+                    readonly: true,
+                    width: '15%'
+                  },
+                  {
+                    title: `数据大类名称`,
+                    dataIndex: 'eventName',
+                    formItemProps: () => {
+                      return {
+                        rules: [{ required: true, message: '此项为必填项' }]
+                      };
+                    }
+                  },
+                  {
+                    title: '数据大类名称',
+                    dataIndex: 'subEventName',
+                    formItemProps: () => {
+                      return {
+                        rules: [{ required: true, message: '此项为必填项' }]
+                      };
+                    }
+                  }
+                ]}
+                initData={[
+                  {
+                    id: 0,
+                    eventName: '消费者权益',
+                    subEventName: '假冒伪劣产品'
+                  },
+                  {
+                    id: 1,
+                    eventName: '消费者权益',
+                    subEventName: '售后服务不佳'
+                  },
+                  {
+                    id: 2,
+                    eventName: '消费者权益',
+                    subEventName: '食品安全问题'
+                  },
+                  {
+                    id: 3,
+                    eventName: '消费者权益',
+                    subEventName: '价格欺诈'
+                  },
+                  {
+                    id: 4,
+                    eventName: '消费者权益',
+                    subEventName: '商品虚假宣传'
+                  },
+                  {
+                    id: 5,
+                    eventName: '环境保护',
+                    subEventName: '工业废水排放'
+                  },
+                  {
+                    id: 6,
+                    eventName: '环境保护',
+                    subEventName: '空气污染'
+                  },
+                  {
+                    id: 7,
+                    eventName: '环境保护',
+                    subEventName: '噪音扰民'
+                  },
+                  {
+                    id: 8,
+                    eventName: '环境保护',
+                    subEventName: '非法砍伐森林'
+                  },
+                  {
+                    id: 9,
+                    eventName: '环境保护',
+                    subEventName: '土壤污染'
+                  },
+                  {
+                    id: 10,
+                    eventName: '环境保护',
+                    subEventName: '野生动物保护'
+                  }
+                ]}
+              />
             </TabPanel>
           </TabPanels>
         </Tabs>
