@@ -53,7 +53,7 @@ const BlockWrapper: React.FC<{ title: string; initData: any[]; newColumns?: any[
           {
             title: `${title}名称`,
             dataIndex: 'name',
-            formItemProps: (form, { rowIndex }) => {
+            formItemProps: (_form: any) => {
               return {
                 rules: [{ required: true, message: '此项为必填项' }]
               };
@@ -80,7 +80,7 @@ const BlockWrapper: React.FC<{ title: string; initData: any[]; newColumns?: any[
         <a
           key="delete"
           onClick={() => {
-            setDataSource(dataSource.filter((item) => item.id !== record.id));
+            setDataSource(dataSource!.filter((item) => item.id !== record.id));
           }}
         >
           删除
@@ -90,6 +90,7 @@ const BlockWrapper: React.FC<{ title: string; initData: any[]; newColumns?: any[
   ];
 
   return (
+    // @ts-ignore
     <EditableProTable<DataSourceType>
       rowKey="id"
       headerTitle=""
