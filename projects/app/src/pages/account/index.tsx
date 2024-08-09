@@ -20,6 +20,7 @@ const BillTable = dynamic(() => import('./components/BillTable'));
 const InformTable = dynamic(() => import('./components/InformTable'));
 const ApiKeyTable = dynamic(() => import('./components/ApiKeyTable'));
 const Individuation = dynamic(() => import('./components/Individuation'));
+const UsersMng = dynamic(() => import('./components/UsersMng'));
 
 enum TabEnum {
   'info' = 'info',
@@ -29,7 +30,8 @@ enum TabEnum {
   'inform' = 'inform',
   'individuation' = 'individuation',
   'apikey' = 'apikey',
-  'loginout' = 'loginout'
+  'loginout' = 'loginout',
+  'usersmng' = 'usersmng'
 }
 
 const Account = ({ currentTab }: { currentTab: TabEnum }) => {
@@ -62,7 +64,6 @@ const Account = ({ currentTab }: { currentTab: TabEnum }) => {
           }
         ]
       : []),
-
     ...(feConfigs?.show_promotion
       ? [
           {
@@ -72,6 +73,16 @@ const Account = ({ currentTab }: { currentTab: TabEnum }) => {
           }
         ]
       : []),
+    // 固定管理员账号为root用户
+    // ...(userInfo?.username === 'root'
+    //   ? [
+    //       {
+    //         icon: 'core/dataset/datasetLight',
+    //         label: t('common:user.Users Manage'),
+    //         value: TabEnum.usersmng
+    //       }
+    //     ]
+    //   : []),
     ...(userInfo?.team?.permission.hasWritePer
       ? [
           {
@@ -178,6 +189,7 @@ const Account = ({ currentTab }: { currentTab: TabEnum }) => {
             {currentTab === TabEnum.usage && <UsageTable />}
             {currentTab === TabEnum.bill && <BillTable />}
             {currentTab === TabEnum.individuation && <Individuation />}
+            {currentTab === TabEnum.usersmng && <UsersMng />}
             {currentTab === TabEnum.inform && <InformTable />}
             {currentTab === TabEnum.apikey && <ApiKeyTable />}
           </Box>

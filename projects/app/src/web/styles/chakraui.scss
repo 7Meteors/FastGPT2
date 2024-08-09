@@ -7,7 +7,8 @@ body select {
   font-size: var(--chakra-fontSizes-xs) !important;
 }
 
-.graph-table {
+.graph-table,
+.users-mng {
   .ant-pro-card-body {
     padding: 0;
   }
