@@ -7,7 +7,8 @@ import { UserType } from '@fastgpt/global/support/user/type.d';
 import type {
   FastLoginProps,
   OauthLoginProps,
-  PostLoginProps
+  PostLoginProps,
+  ResUserList
 } from '@fastgpt/global/support/user/api.d';
 import { GetWXLoginQRResponse } from '@fastgpt/global/support/user/login/api.d';
 
@@ -68,6 +69,8 @@ export const postLogin = ({ password, ...props }: PostLoginProps) =>
     ...props,
     password: hashStr(password)
   });
+
+export const userList = () => GET<ResUserList>('/support/user/account/userList');
 
 export const loginOut = () => GET('/support/user/account/loginout');
 

@@ -74,15 +74,15 @@ const Account = ({ currentTab }: { currentTab: TabEnum }) => {
         ]
       : []),
     // 固定管理员账号为root用户
-    // ...(userInfo?.username === 'root'
-    //   ? [
-    //       {
-    //         icon: 'core/dataset/datasetLight',
-    //         label: t('common:user.Users Manage'),
-    //         value: TabEnum.usersmng
-    //       }
-    //     ]
-    //   : []),
+    ...(userInfo?.username === 'root'
+      ? [
+          {
+            icon: 'core/dataset/datasetLight',
+            label: t('common:user.Users Manage'),
+            value: TabEnum.usersmng
+          }
+        ]
+      : []),
     ...(userInfo?.team?.permission.hasWritePer
       ? [
           {

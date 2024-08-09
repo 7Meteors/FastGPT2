@@ -21,3 +21,8 @@ export type FastLoginProps = {
   token: string;
   code: string;
 };
+
+export type ResUserList = {
+  data: Partial<UserType>[];
+  code: string;
+};

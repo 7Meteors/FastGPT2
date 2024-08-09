@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next';
 import type { ProColumns } from '@ant-design/pro-components';
 import dynamic from 'next/dynamic';
 import { UserStatusEnum, userStatusMap } from '@fastgpt/global/support/user/constant';
+import { userList } from '@/web/support/user/api';
 
 const EditableProTable = dynamic(
   (): any => import('@ant-design/pro-components').then((item) => item.EditableProTable),
@@ -107,11 +108,14 @@ const UsersMng: React.FC<{ title: string; initData: any[]; newColumns?: any[] }>
           }}
           loading={false}
           columns={columns}
-          request={async () => ({
-            data: initData,
-            total: 3,
-            success: true
-          })}
+          request={async () => {
+            const { users } = await userList();
+            return {
+              data: users,
+              success: true,
+              total: users.length
+            };
+          }}
           value={dataSource}
           onChange={setDataSource}
           editable={{
