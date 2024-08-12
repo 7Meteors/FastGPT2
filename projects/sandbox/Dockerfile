@@ -15,7 +15,7 @@ RUN apk add --no-cache make g++
 # copy py3.11
 COPY --from=python_base /usr/local /usr/local
 
-RUN npm install -g pnpm@9.4.0
+RUN npm install -g pnpm@9.4.0 --registry https://registry.npmmirror.com
 RUN [ -z "$proxy" ] || pnpm config set registry https://registry.npmmirror.com
 
 COPY pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -35,7 +35,7 @@ COPY --from=install /app/node_modules /app/node_modules
 COPY ./projects/sandbox /app/projects/sandbox
 COPY --from=install /app/projects/sandbox /app/projects/sandbox
 
-RUN npm install -g pnpm@9.4.0
+RUN npm install -g pnpm@9.4.0 --registry https://registry.npmmirror.com
 RUN pnpm --filter=sandbox build
 
 # --------- runner -----------
