@@ -9,5 +9,19 @@
   },
   "team": {
     "Add manager": "Add manager"
+  },
+  "account": {
+    "UserName": "UserName",
+    "Avatar": "Avatar",
+    "timezone": "timezone",
+    "createTime": "createTime",
+    "status": "status",
+    "option": "option",
+    "forbidden": "forbidden",
+    "active": "active",
+    "deleteTip": "Confirm to Delete?",
+    "resetPswTip": "Confirm to reset password as '123456'?",
+    "activateTip": "Confirm to activated user?",
+    "deactivateTip": "Confirm to deactivated user?"
   }
 }

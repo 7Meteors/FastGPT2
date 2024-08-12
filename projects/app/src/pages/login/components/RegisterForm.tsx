@@ -3,13 +3,13 @@ import { FormControl, Box, Input, Button } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { LoginPageTypeEnum } from '@/web/support/user/login/constants';
 import { postRegister } from '@/web/support/user/api';
-import { useSendCode } from '@/web/support/user/hooks/useSendCode';
 import type { ResLogin } from '@/global/support/api/userRes';
 import { useToast } from '@fastgpt/web/hooks/useToast';
 import { postCreateApp } from '@/web/core/app/api';
 import { defaultAppTemplates } from '@/web/core/app/templates';
 import { useSystemStore } from '@/web/common/system/useSystemStore';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 
 interface Props {
   loginSuccess: (e: ResLogin) => void;
@@ -26,6 +26,8 @@ interface RegisterType {
 const RegisterForm = ({ setPageType, loginSuccess }: Props) => {
   const { toast } = useToast();
   const { t } = useTranslation();
+  const router = useRouter();
+
   const { feConfigs } = useSystemStore();
   const {
     register,
@@ -37,34 +39,22 @@ const RegisterForm = ({ setPageType, loginSuccess }: Props) => {
     mode: 'onBlur'
   });
 
-  const { sendCodeText, sendCode, codeCountDown } = useSendCode();
-
-  const onclickSendCode = useCallback(async () => {
-    const check = await trigger('username');
-    if (!check) return;
-    sendCode({
-      username: getValues('username'),
-      type: 'register'
-    });
-  }, [getValues, sendCode, trigger]);
-
   const [requesting, setRequesting] = useState(false);
 
   const onclickRegister = useCallback(
     async ({ username, password }: RegisterType) => {
       setRequesting(true);
       try {
-        loginSuccess(
-          await postRegister({
-            username,
-            password,
-            inviterId: localStorage.getItem('inviterId') || undefined
-          })
-        );
+        await postRegister({
+          username,
+          password,
+          inviterId: localStorage.getItem('inviterId') || undefined
+        });
         toast({
-          title: `注册成功`,
+          title: `注册成功，联系管理员激活账户后即可使用`,
           status: 'success'
         });
+        router.push('/login');
         // auto register template app
         setTimeout(() => {
           defaultAppTemplates.forEach((template) => {
@@ -85,7 +75,7 @@ const RegisterForm = ({ setPageType, loginSuccess }: Props) => {
       }
       setRequesting(false);
     },
-    [loginSuccess, t, toast]
+    [router, t, toast]
   );
 
   return (

@@ -1,8 +1,8 @@
-import { GET, POST, PUT } from '@/web/common/api/request';
+import { GET, POST, PUT, DELETE } from '@/web/common/api/request';
 import { hashStr } from '@fastgpt/global/common/string/tools';
 import type { ResLogin } from '@/global/support/api/userRes.d';
 import { UserAuthTypeEnum } from '@fastgpt/global/support/user/auth/constants';
-import { UserUpdateParams } from '@/types/user';
+import { UserDeleteParams, UserUpdateParams } from '@/types/user';
 import { UserType } from '@fastgpt/global/support/user/type.d';
 import type {
   FastLoginProps,
@@ -11,6 +11,7 @@ import type {
   ResUserList
 } from '@fastgpt/global/support/user/api.d';
 import { GetWXLoginQRResponse } from '@fastgpt/global/support/user/login/api.d';
+import { UserStatusEnum } from '@fastgpt/global/support/user/constant';
 
 export const sendAuthCode = (data: {
   username: string;
@@ -70,7 +71,14 @@ export const postLogin = ({ password, ...props }: PostLoginProps) =>
     password: hashStr(password)
   });
 
-export const userList = () => GET<ResUserList>('/support/user/account/userList');
+export const userList = ({ username, status }: { username: string; status: UserStatusEnum }) =>
+  GET<ResUserList>('/support/user/account/userList', { username, status });
+
+export const userDelete = (data: UserDeleteParams) =>
+  DELETE<ResUserList>('/support/user/account/userDelete', data);
+
+export const userUpdate = (data: UserUpdateParams) =>
+  PUT<ResUserList>('/support/user/account/userUpdate', data);
 
 export const loginOut = () => GET('/support/user/account/loginout');
 

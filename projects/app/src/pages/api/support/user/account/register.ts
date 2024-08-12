@@ -4,6 +4,7 @@ import { MongoUser } from '@fastgpt/service/support/user/schema';
 import { connectToDatabase } from '@/service/mongo';
 import { MongoTeam } from '@fastgpt/service/support/user/team/teamSchema';
 import { MongoTeamMember } from '@fastgpt/service/support/user/team/teamMemberSchema';
+import { UserStatusEnum } from '@fastgpt/global/support/user/constant';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -23,7 +24,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } else {
       const { _id } = await MongoUser.create({
         username,
-        password
+        password,
+        status: UserStatusEnum.forbidden
       });
       const { _id: rootUserId } = await MongoUser.findOne({
         username: 'root'

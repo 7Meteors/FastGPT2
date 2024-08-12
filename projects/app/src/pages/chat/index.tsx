@@ -251,7 +251,7 @@ const Chat = ({
                   chatHistories={chatRecords}
                   setChatHistories={setChatRecords}
                   variablesForm={variablesForm}
-                  showEmptyIntro
+                  showEmptyIntro={false}
                   appAvatar={chatData.app.avatar}
                   userAvatar={userInfo?.avatar}
                   chatConfig={chatData.app?.chatConfig}

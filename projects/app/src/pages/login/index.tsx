@@ -37,8 +37,10 @@ const Login = () => {
       setUserInfo(res.user);
       setToken(res.token);
       setTimeout(() => {
-        router.push(lastRoute ? decodeURIComponent(lastRoute) : '/app/list');
-      }, 300);
+        router.push(
+          lastRoute && lastRoute !== '/login' ? decodeURIComponent(lastRoute) : '/app/list'
+        );
+      }, 100);
     },
     [lastRoute, router, setLastChatId, setLastChatAppId, setUserInfo]
   );

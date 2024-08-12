@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Box, Flex, Image, Button, useDisclosure, Grid, GridItem } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
 import type { ProColumns } from '@ant-design/pro-components';
@@ -7,7 +7,9 @@ import dynamic from 'next/dynamic';
 import dayjs from 'dayjs';
 import Avatar from '@fastgpt/web/components/common/Avatar';
 import { UserStatusEnum, userStatusMap } from '@fastgpt/global/support/user/constant';
-import { userList } from '@/web/support/user/api';
+import { userList, userDelete, userUpdate } from '@/web/support/user/api';
+import { useConfirm } from '@fastgpt/web/hooks/useConfirm';
+import { hashStr } from '@fastgpt/global/common/string/tools';
 
 const ProTable = dynamic(
   (): any => import('@ant-design/pro-components').then((item) => item.ProTable),
@@ -35,16 +37,20 @@ const waitTime = (time: number = 100) => {
   });
 };
 
-const UsersMng: React.FC<{ title: string; initData: any[]; newColumns?: any[] }> = ({
-  title,
-  initData,
-  newColumns
-}) => {
+const UsersMng: React.FC = () => {
   const { t } = useTranslation();
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [dataSource, setDataSource] = useState<readonly DataSourceType[]>();
   const [indexCount, setIndexCount] = useState<number>(0);
+  const actionRef = useRef();
 
+  const { ConfirmModal, openConfirm } = useConfirm({
+    type: 'confirm'
+  });
+  const { openConfirm: openConfirmDel, ConfirmModal: ConfirmDelModal } = useConfirm({
+    content: t('user:account.deleteTip'),
+    type: 'delete'
+  });
   const columns: ProColumns<DataSourceType>[] = [
     {
       title: '用户名称',
@@ -103,7 +109,17 @@ const UsersMng: React.FC<{ title: string; initData: any[]; newColumns?: any[] }>
               <a
                 key="resetPsw"
                 onClick={() => {
-                  action?.startEditable?.(record.id);
+                  openConfirm(
+                    async () => {
+                      await userUpdate({
+                        _id: record._id,
+                        password: hashStr('123456')
+                      });
+                      actionRef.current.reload();
+                    },
+                    _,
+                    t('user:account.resetPswTip')
+                  )();
                 }}
               >
                 重置密码
@@ -111,16 +127,34 @@ const UsersMng: React.FC<{ title: string; initData: any[]; newColumns?: any[] }>
               <a
                 key="activate"
                 onClick={() => {
-                  action?.startEditable?.(record.id);
+                  openConfirm(
+                    async () => {
+                      await userUpdate({
+                        _id: record._id,
+                        status:
+                          record.status === UserStatusEnum.active
+                            ? UserStatusEnum.forbidden
+                            : UserStatusEnum.active
+                      });
+                      actionRef.current.reload();
+                    },
+                    _,
+                    record.status === UserStatusEnum.active
+                      ? t('user:account.deactivateTip')
+                      : t('user:account.activateTip')
+                  )();
                 }}
               >
-                {record.state === UserStatusEnum.active ? '禁用' : '激活'}
+                {record.status === UserStatusEnum.active ? '禁用' : '激活'}
               </a>,
               <a
                 key="delete"
                 style={{ color: 'red' }}
                 onClick={() => {
-                  setDataSource(dataSource!.filter((item) => item.id !== record.id));
+                  openConfirmDel(async () => {
+                    await userDelete({ _id: record._id });
+                    actionRef.current.reload();
+                  })();
                 }}
               >
                 删除
@@ -133,12 +167,16 @@ const UsersMng: React.FC<{ title: string; initData: any[]; newColumns?: any[] }>
     <Flex p={4} className="users-mng">
       <Box flexGrow={1}>
         <ProTable<DataSourceType>
-          rowKey="id"
+          rowKey="_id"
+          actionRef={actionRef}
           headerTitle=""
           toolBarRender={false}
+          pagination={{
+            pageSize: 10
+          }}
           columns={columns}
-          request={async () => {
-            const { users } = await userList();
+          request={async ({ username, status }) => {
+            const { users } = await userList({ username, status });
             return {
               data: users,
               success: true,
@@ -147,9 +185,10 @@ const UsersMng: React.FC<{ title: string; initData: any[]; newColumns?: any[] }>
           }}
           value={dataSource}
         />
+        <ConfirmModal />
+        <ConfirmDelModal />
       </Box>
     </Flex>
-    // @ts-ignore
   );
 };
 

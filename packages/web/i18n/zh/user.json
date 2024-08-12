@@ -9,5 +9,19 @@
   },
   "team": {
     "Add manager": "添加管理员"
+  },
+  "account": {
+    "UserName": "用户名称",
+    "Avatar": "头像",
+    "timezone": "时区",
+    "createTime": "创建时间",
+    "status": "状态",
+    "option": "操作",
+    "forbidden": "禁用",
+    "active": "生效",
+    "deleteTip": "是否确认删除？",
+    "resetPswTip": "是否确认重置为初始密码(123456)？",
+    "activateTip": "是否确认激活用户？",
+    "deactivateTip": "是否确认禁用用户？"
   }
 }
