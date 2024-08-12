@@ -249,15 +249,13 @@ const MyInfo = () => {
           <Box {...labelStyles}>{t('common:user.Account')}:&nbsp;</Box>
           <Box flex={1}>{userInfo?.username}</Box>
         </Flex>
-        {feConfigs.isPlus && (
-          <Flex mt={6} alignItems={'center'}>
-            <Box {...labelStyles}>{t('common:user.Password')}:&nbsp;</Box>
-            <Box flex={1}>*****</Box>
-            <Button size={'sm'} variant={'whitePrimary'} onClick={onOpenUpdatePsw}>
-              {t('common:user.Change')}
-            </Button>
-          </Flex>
-        )}
+        <Flex mt={6} alignItems={'center'}>
+          <Box {...labelStyles}>{t('common:user.Password')}:&nbsp;</Box>
+          <Box flex={1}>*****</Box>
+          <Button size={'sm'} variant={'whitePrimary'} onClick={onOpenUpdatePsw}>
+            {t('common:user.Change')}
+          </Button>
+        </Flex>
         <Flex mt={6} alignItems={'center'}>
           <Box {...labelStyles}>{t('common:user.Team')}:&nbsp;</Box>
           <Box flex={1}>

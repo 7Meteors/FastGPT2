@@ -51,13 +51,12 @@ const RegisterForm = ({ setPageType, loginSuccess }: Props) => {
   const [requesting, setRequesting] = useState(false);
 
   const onclickRegister = useCallback(
-    async ({ username, password, code }: RegisterType) => {
+    async ({ username, password }: RegisterType) => {
       setRequesting(true);
       try {
         loginSuccess(
           await postRegister({
             username,
-            code,
             password,
             inviterId: localStorage.getItem('inviterId') || undefined
           })
@@ -116,7 +115,7 @@ const RegisterForm = ({ setPageType, loginSuccess }: Props) => {
             })}
           ></Input>
         </FormControl>
-        <FormControl
+        {/* <FormControl
           mt={6}
           isInvalid={!!errors.code}
           display={'flex'}
@@ -149,7 +148,7 @@ const RegisterForm = ({ setPageType, loginSuccess }: Props) => {
           >
             {sendCodeText}
           </Box>
-        </FormControl>
+        </FormControl> */}
         <FormControl mt={6} isInvalid={!!errors.password}>
           <Input
             bg={'myGray.50'}

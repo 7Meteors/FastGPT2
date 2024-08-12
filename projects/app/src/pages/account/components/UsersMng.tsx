@@ -4,11 +4,13 @@ import { Box, Flex, Image, Button, useDisclosure, Grid, GridItem } from '@chakra
 import { useTranslation } from 'next-i18next';
 import type { ProColumns } from '@ant-design/pro-components';
 import dynamic from 'next/dynamic';
+import dayjs from 'dayjs';
+import Avatar from '@fastgpt/web/components/common/Avatar';
 import { UserStatusEnum, userStatusMap } from '@fastgpt/global/support/user/constant';
 import { userList } from '@/web/support/user/api';
 
-const EditableProTable = dynamic(
-  (): any => import('@ant-design/pro-components').then((item) => item.EditableProTable),
+const ProTable = dynamic(
+  (): any => import('@ant-design/pro-components').then((item) => item.ProTable),
   {
     ssr: false
   }
@@ -46,11 +48,32 @@ const UsersMng: React.FC<{ title: string; initData: any[]; newColumns?: any[] }>
   const columns: ProColumns<DataSourceType>[] = [
     {
       title: '用户名称',
-      dataIndex: 'username',
+      dataIndex: 'username'
+    },
+    {
+      title: '头像',
+      dataIndex: 'avatar',
+      hideInSearch: true,
+      render(_, record) {
+        return <Avatar src={record?.avatar} borderRadius={'50%'} w="32px" h="32px" />;
+      }
+    },
+    {
+      title: '时区',
+      dataIndex: 'timezone',
+      hideInSearch: true,
       formItemProps: () => {
         return {
           rules: [{ required: true, message: '此项为必填项' }]
         };
+      }
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      hideInSearch: true,
+      render(_, record) {
+        return record.createTime ? dayjs(record.createTime).format('YYYY/MM/DD HH:mm:ss') : '-';
       }
     },
     {
@@ -72,41 +95,47 @@ const UsersMng: React.FC<{ title: string; initData: any[]; newColumns?: any[] }>
     {
       title: '操作',
       valueType: 'option',
-      width: 200,
-      render: (text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(record.id);
-          }}
-        >
-          编辑
-        </a>,
-        <a
-          key="delete"
-          onClick={() => {
-            setDataSource(dataSource!.filter((item) => item.id !== record.id));
-          }}
-        >
-          删除
-        </a>
-      ]
+      width: 165,
+      render: (text, record, _, action) =>
+        record.username === 'root'
+          ? []
+          : [
+              <a
+                key="resetPsw"
+                onClick={() => {
+                  action?.startEditable?.(record.id);
+                }}
+              >
+                重置密码
+              </a>,
+              <a
+                key="activate"
+                onClick={() => {
+                  action?.startEditable?.(record.id);
+                }}
+              >
+                {record.state === UserStatusEnum.active ? '禁用' : '激活'}
+              </a>,
+              <a
+                key="delete"
+                style={{ color: 'red' }}
+                onClick={() => {
+                  setDataSource(dataSource!.filter((item) => item.id !== record.id));
+                }}
+              >
+                删除
+              </a>
+            ]
     }
   ];
 
   return (
     <Flex p={4} className="users-mng">
       <Box flexGrow={1}>
-        <EditableProTable<DataSourceType>
+        <ProTable<DataSourceType>
           rowKey="id"
           headerTitle=""
-          recordCreatorProps={{
-            position: 'bottom',
-            record: () => {
-              return { id: indexCount };
-            }
-          }}
-          loading={false}
+          toolBarRender={false}
           columns={columns}
           request={async () => {
             const { users } = await userList();
@@ -117,17 +146,6 @@ const UsersMng: React.FC<{ title: string; initData: any[]; newColumns?: any[] }>
             };
           }}
           value={dataSource}
-          onChange={setDataSource}
-          editable={{
-            type: 'multiple',
-            editableKeys,
-            onSave: async (rowKey, data, row) => {
-              console.log(rowKey, data, row);
-              setIndexCount(indexCount + 1);
-              await waitTime(500);
-            },
-            onChange: setEditableRowKeys
-          }}
         />
       </Box>
     </Flex>
