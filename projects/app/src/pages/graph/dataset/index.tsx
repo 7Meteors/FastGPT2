@@ -1,16 +1,8 @@
-import React, { useState } from 'react';
-import { Flex, useDisclosure, Tabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
+import React from 'react';
+import { Flex, Tabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
 import { serviceSideProps } from '@/web/common/utils/i18n';
-import { DatasetsContext } from './context';
 import DatasetContextProvider from './context';
-import { useContextSelector } from 'use-context-selector';
-import { useUserStore } from '@/web/support/user/useUserStore';
-import { EditFolderFormType } from '@fastgpt/web/components/common/MyModal/EditFolderModal';
-import { useSystem } from '@fastgpt/web/hooks/useSystem';
-import type { ProColumns } from '@ant-design/pro-components';
-import { EditableProTable, ProFormField, ProFormRadio } from '@ant-design/pro-components';
 import GraphTable from './component/GraphTable';
 
 type DataSourceType = {

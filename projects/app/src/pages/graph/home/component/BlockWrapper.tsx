@@ -14,10 +14,6 @@ const BlockWrapper: React.FC<{ children: any }> = ({ children }) => {
       borderRadius={'md'}
       minH={'130px'}
       position={'relative'}
-      // {...getBoxProps({
-      //     dataId: dataset._id,
-      //     isFolder: dataset.type === DatasetTypeEnum.folder
-      // })}
       _hover={{
         borderColor: 'primary.300',
         boxShadow: '1.5',

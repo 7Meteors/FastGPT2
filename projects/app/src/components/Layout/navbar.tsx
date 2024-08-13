@@ -49,8 +49,8 @@ const Navbar = ({ unread }: { unread: number }) => {
       },
       {
         label: t('common:navbar.Graph'),
-        icon: 'core/dataset/datasetLight',
-        activeIcon: 'core/dataset/datasetFill',
+        icon: 'graph/graph',
+        activeIcon: 'graph/graph',
         link: `/graph`,
         activeLink: ['/graph']
       },
