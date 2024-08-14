@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Flex, Tabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
 import { serviceSideProps } from '@/web/common/utils/i18n';
 import DatasetContextProvider from './context';
 import GraphTable from './component/GraphTable';
+import { useRouter } from 'next/router';
+import LightRowTabs from '@fastgpt/web/components/common/Tabs/LightRowTabs';
 
 type DataSourceType = {
   id: React.Key;
@@ -16,12 +18,56 @@ type DataSourceType = {
   children?: DataSourceType[];
 };
 
+export enum DatasetTypeEnum {
+  node = 'node',
+  link = 'link'
+}
+
+export enum NodeTypeEnum {
+  eventClass = 'eventClass',
+  subEventClass = 'subEventClass',
+  unit = 'unit',
+  department = 'department'
+}
+
 const Dataset = () => {
   const { t } = useTranslation();
+  const router = useRouter();
+  const [appType, setAppType] = useState(DatasetTypeEnum.link);
 
   return (
     <Flex p={4} className="graph-table">
       <Flex flexGrow={1} flexDirection="column">
+        <LightRowTabs
+          list={[
+            {
+              label: t('graph:dataset.Event class'),
+              value: DatasetTypeEnum.node
+            },
+            {
+              label: t('graph:dataset.Event subclass'),
+              value: DatasetTypeEnum.link
+            }
+          ]}
+          value={appType}
+          inlineStyles={{ px: 0.5 }}
+          gap={5}
+          display={'flex'}
+          alignItems={'center'}
+          fontSize={['sm', 'md']}
+          flexShrink={0}
+          onChange={(e) => {
+            console.log(e);
+            setAppType(e);
+            // router.push({
+            //   query: {
+            //     ...router.query,
+            //     type: e
+            //   }
+            // });
+          }}
+        />
+
         <Tabs>
           <TabList>
             <Tab>{t('graph:dataset.Event class')}</Tab>
