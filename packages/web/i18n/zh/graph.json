@@ -6,6 +6,8 @@
   "dataset": {
     "Event class": "事件大类",
     "Event subclass": "事件小类",
-    "Event connection": "事件关联"
+    "Event connection": "事件关联",
+    "node": "节点",
+    "link": "关联"
   }
 }

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import type { ProColumns } from '@ant-design/pro-components';
 import dynamic from 'next/dynamic';
-import { getNodes } from '@/web/core/graph/api';
 
 const EditableProTable = dynamic(
   (): any => import('@ant-design/pro-components').then((item) => item.EditableProTable),
@@ -30,11 +29,15 @@ const waitTime = (time: number = 100) => {
   });
 };
 
-const GraphTable: React.FC<{ title: string; newColumns?: any[] }> = ({ title, newColumns }) => {
+const BlockWrapper: React.FC<{ title: string; initData: any[]; newColumns?: any[] }> = ({
+  title,
+  initData,
+  newColumns
+}) => {
   const { t } = useTranslation();
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [dataSource, setDataSource] = useState<readonly DataSourceType[]>();
-  const [indexCount, setIndexCount] = useState<number>(0);
+  const [indexCount, setIndexCount] = useState<number>(initData[initData.length - 1]?.id + 1 || 0);
 
   const columns: ProColumns<DataSourceType>[] = [
     ...(newColumns
@@ -99,22 +102,17 @@ const GraphTable: React.FC<{ title: string; newColumns?: any[] }> = ({ title, ne
       }}
       loading={false}
       columns={columns}
-      request={async () => {
-        const res = await getNodes();
-        console.log('res:'), res;
-
-        return {
-          data: [],
-          total: 0,
-          success: true
-        };
-      }}
+      request={async () => ({
+        data: initData,
+        total: 3,
+        success: true
+      })}
       value={dataSource}
       onChange={setDataSource}
       editable={{
         type: 'multiple',
         editableKeys,
-        onSave: async (rowKey: any, data: any, row: any) => {
+        onSave: async (rowKey, data, row) => {
           console.log(rowKey, data, row);
           setIndexCount(indexCount + 1);
           await waitTime(500);
@@ -125,4 +123,4 @@ const GraphTable: React.FC<{ title: string; newColumns?: any[] }> = ({ title, ne
   );
 };
 
-export default GraphTable;
+export default BlockWrapper;

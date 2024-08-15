@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
-import { Flex, Tabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
+import React, { useRef, useState } from 'react';
+import { Flex, Tabs, TabList, Tab, TabPanels, TabPanel, Button, Box } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
 import { serviceSideProps } from '@/web/common/utils/i18n';
 import DatasetContextProvider from './context';
+import dynamic from 'next/dynamic';
 import GraphTable from './component/GraphTable';
 import { useRouter } from 'next/router';
 import LightRowTabs from '@fastgpt/web/components/common/Tabs/LightRowTabs';
+
+const NodeTable = dynamic(() => import('./component/NodeTable'));
+const LinkTable = dynamic(() => import('./component/NodeTable'));
 
 type DataSourceType = {
   id: React.Key;
@@ -33,42 +37,50 @@ export enum NodeTypeEnum {
 const Dataset = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const [appType, setAppType] = useState(DatasetTypeEnum.link);
+  const nodeTableRef = useRef(null);
+  const linkTableRef = useRef(null);
+  const [appType, setAppType] = useState(DatasetTypeEnum.node);
 
   return (
     <Flex p={4} className="graph-table">
       <Flex flexGrow={1} flexDirection="column">
-        <LightRowTabs
-          list={[
-            {
-              label: t('graph:dataset.Event class'),
-              value: DatasetTypeEnum.node
-            },
-            {
-              label: t('graph:dataset.Event subclass'),
-              value: DatasetTypeEnum.link
-            }
-          ]}
-          value={appType}
-          inlineStyles={{ px: 0.5 }}
-          gap={5}
-          display={'flex'}
-          alignItems={'center'}
-          fontSize={['sm', 'md']}
-          flexShrink={0}
-          onChange={(e) => {
-            console.log(e);
-            setAppType(e);
-            // router.push({
-            //   query: {
-            //     ...router.query,
-            //     type: e
-            //   }
-            // });
-          }}
-        />
+        <Flex flexGrow={1} justifyContent="space-between">
+          <LightRowTabs
+            list={[
+              {
+                label: t('graph:dataset.node'),
+                value: DatasetTypeEnum.node
+              },
+              {
+                label: t('graph:dataset.link'),
+                value: DatasetTypeEnum.link
+              }
+            ]}
+            inlineStyles={{ px: 0.5 }}
+            gap={5}
+            display={'flex'}
+            alignItems={'center'}
+            fontSize={['sm', 'md']}
+            flexShrink={0}
+            value={appType}
+            onChange={setAppType}
+          />
+          {appType === DatasetTypeEnum.node && (
+            <Button variant={'whitePrimary'} size="sm" borderRadius={'md'} ml={3}>
+              {t('common:user.team.Invite Member')}
+            </Button>
+          )}
+        </Flex>
 
-        <Tabs>
+        <Flex alignItems={'center'}>
+          {appType === DatasetTypeEnum.node && (
+            <div style={{ flex: '1' }}>
+              <GraphTable title="数据小类" />
+            </div>
+          )}
+          {appType === DatasetTypeEnum.link && <LinkTable ref={linkTableRef} />}
+        </Flex>
+        {/* <Tabs>
           <TabList>
             <Tab>{t('graph:dataset.Event class')}</Tab>
             <Tab>{t('graph:dataset.Event subclass')}</Tab>
@@ -260,7 +272,7 @@ const Dataset = () => {
               />
             </TabPanel>
           </TabPanels>
-        </Tabs>
+        </Tabs> */}
       </Flex>
     </Flex>
   );

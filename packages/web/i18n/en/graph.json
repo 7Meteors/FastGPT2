@@ -6,6 +6,8 @@
   "dataset": {
     "Event class": "Event class",
     "Event subclass": "Event subclass",
-    "Event connection": "Event connection"
+    "Event connection": "Event connection",
+    "node": "Nodes",
+    "link": "Links"
   }
 }
