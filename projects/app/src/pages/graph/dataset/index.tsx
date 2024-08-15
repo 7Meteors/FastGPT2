@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import { serviceSideProps } from '@/web/common/utils/i18n';
 import DatasetContextProvider from './context';
 import dynamic from 'next/dynamic';
-import GraphTable from './component/GraphTable';
+import GraphTable from './component/NodeListTable';
 import { useRouter } from 'next/router';
 import LightRowTabs from '@fastgpt/web/components/common/Tabs/LightRowTabs';
 
