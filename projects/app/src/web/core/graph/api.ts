@@ -4,4 +4,4 @@ import type { GetDatasetListBody } from '@/pages/api/core/dataset/list';
 
 /* ======================== dataset ======================= */
 export const getNodes = (data: GetDatasetListBody) =>
-  POST<DatasetListItemType[]>(`/graph/process/process`);
+  POST<DatasetListItemType[]>(`/graph/nodesList`);
