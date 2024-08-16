@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next';
 import type { ProColumns } from '@ant-design/pro-components';
 import dynamic from 'next/dynamic';
 import { useToast } from '@fastgpt/web/hooks/useToast';
-import { deleteNode, getNodes, newNode } from '@/web/core/graph/api';
+import { deleteNode, editNode, getNodes, newNode } from '@/web/core/graph/api';
 import { useConfirm } from '@fastgpt/web/hooks/useConfirm';
 
 const EditableProTable = dynamic(
@@ -110,9 +110,7 @@ const NodeListTable: React.FC = () => {
         headerTitle=""
         recordCreatorProps={{
           position: 'bottom',
-          record: () => {
-            return { id: indexCount };
-          }
+          record: () => ({})
         }}
         className="nodeListTable"
         search={true}
@@ -130,16 +128,40 @@ const NodeListTable: React.FC = () => {
         editable={{
           type: 'multiple',
           editableKeys,
-          onSave: async (_, { name, type }: any) => {
-            await newNode({ name, type });
-            const res = await getNodes();
-            setDataSource(res as any);
-            toast({
-              status: 'success',
-              title: '新建节点成功'
-            });
-          },
-          onChange: setEditableRowKeys
+          onChange: setEditableRowKeys,
+          onSave: async (_: any, record: any, originObj: any, newLineConfig: any) => {
+            console.log('newLineConfig', newLineConfig);
+            try {
+              if (newLineConfig) {
+                await newNode({
+                  name: record.name,
+                  type: record.type
+                });
+              } else {
+                if (record.name === originObj.name && record.type === originObj.type) {
+                  return;
+                }
+                await editNode({
+                  name: record.name as string,
+                  type: record.type,
+                  ...(originObj.type === record.type ? {} : { oldType: originObj.type }),
+                  id: record.id
+                });
+              }
+              toast({
+                status: 'success',
+                title: `${newLineConfig ? '新建' : '编辑'}节点成功`
+              });
+            } catch (error: Error) {
+              toast({
+                status: 'error',
+                title: error.message
+              });
+            } finally {
+              const res = await getNodes();
+              setDataSource(res as any);
+            }
+          }
         }}
       />
       <ConfirmModal />

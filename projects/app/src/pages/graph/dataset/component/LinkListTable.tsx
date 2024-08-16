@@ -22,14 +22,6 @@ type DataSourceType = {
   children?: DataSourceType[];
 };
 
-const waitTime = (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
-
 const GraphTable: React.FC<{ title: string; newColumns?: any[] }> = ({ title, newColumns }) => {
   const { t } = useTranslation();
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
