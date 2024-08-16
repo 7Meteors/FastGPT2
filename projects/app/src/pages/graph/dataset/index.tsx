@@ -8,6 +8,7 @@ import GraphTable from './component/NodeListTable';
 import { useRouter } from 'next/router';
 import LightRowTabs from '@fastgpt/web/components/common/Tabs/LightRowTabs';
 
+const NodeListTable = dynamic(() => import('./component/NodeListTable'));
 const NodeTable = dynamic(() => import('./component/NodeTable'));
 const LinkTable = dynamic(() => import('./component/NodeTable'));
 
@@ -43,8 +44,8 @@ const Dataset = () => {
 
   return (
     <Flex p={4} className="graph-table">
-      <Flex flexGrow={1} flexDirection="column">
-        <Flex flexGrow={1} justifyContent="space-between">
+      <Flex flexGrow={1} flexDirection="column" style={{ width: '100%' }}>
+        <Flex flexGrow={1} style={{ width: '100%' }} justifyContent="space-between">
           <LightRowTabs
             list={[
               {
@@ -74,8 +75,8 @@ const Dataset = () => {
 
         <Flex alignItems={'center'}>
           {appType === DatasetTypeEnum.node && (
-            <div style={{ flex: '1' }}>
-              <GraphTable title="数据小类" />
+            <div style={{ flex: 1, width: '100%' }}>
+              <NodeListTable />
             </div>
           )}
           {appType === DatasetTypeEnum.link && <LinkTable ref={linkTableRef} />}

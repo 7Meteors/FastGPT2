@@ -5,7 +5,30 @@ import { driver } from '@fastgpt/service/common/neo4j/index';
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   try {
     const session = driver.session();
-    const result = await session.run('MATCH (n) RETURN n');
+
+    const { name, type } = req.body as {
+      name: string;
+      type: string;
+    };
+
+    const sameNameNode = await session.run(
+      `MATCH (n:${type} {name: $name})
+      RETURN n`,
+      { type, name }
+    );
+    if (sameNameNode.records.length) {
+      jsonRes(res, {
+        code: 500,
+        error: '名称重复'
+      });
+    }
+
+    const result = await session.run(
+      `CREATE (n:${type} {name: $name})
+       RETURN n`,
+      { type, name }
+    );
+
     jsonRes(res, {
       data: result.records.map((r: { get: (arg0: string) => any }) => {
         const node = r.get('n');

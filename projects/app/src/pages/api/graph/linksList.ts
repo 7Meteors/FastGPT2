@@ -5,16 +5,9 @@ import { driver } from '@fastgpt/service/common/neo4j/index';
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   try {
     const session = driver.session();
-    const result = await session.run('MATCH (n) RETURN n');
+    const result = await session.run('MATCH ()-[r]->() RETURN r');
     jsonRes(res, {
-      data: result.records.map((r: { get: (arg0: string) => any }) => {
-        const node = r.get('n');
-        return {
-          id: node.elementId,
-          name: node.properties?.name,
-          type: node.labels[0]
-        };
-      })
+      data: result.records.map((r: { get: (arg0: string) => any }) => r.get('r'))
     });
     session.close();
   } catch (err) {

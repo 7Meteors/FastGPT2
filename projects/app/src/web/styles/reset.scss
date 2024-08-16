@@ -88,3 +88,7 @@ textarea::placeholder {
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
+.nodeListTable .ant-pro-query-filter.ant-pro-query-filter {
+  padding: 10px 0;
+}
