@@ -65,6 +65,7 @@
     "sass": "^1.58.3",
     "use-context-selector": "^1.4.4",
     "zustand": "^4.3.5",
+    "antd": "^5.20.1",
     "@ant-design/pro-components": "^2.7.15"
   },
   "devDependencies": {

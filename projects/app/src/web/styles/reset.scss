@@ -92,3 +92,12 @@ textarea::placeholder {
 .nodeListTable .ant-pro-query-filter.ant-pro-query-filter {
   padding: 10px 0;
 }
+
+.lightSearch .ant-pro-query-filter-row .ant-col:last-child {
+  text-align: start;
+  margin-inline-start: 0;
+}
+
+.nodeListTable .ant-table-wrapper .ant-table-thead > tr > th {
+  background: var(--chakra-colors-myGray-100);
+}

@@ -8,9 +8,10 @@ type POSTNewNodeBody = {
   type: string;
 };
 
-export const getNodes = () => GET<DatasetListItemType[]>(`/graph/nodesList`);
+export const getNodes = (params?: { name?: string; type?: string }) =>
+  GET<{ data: any[] }>(`/graph/nodesList`, params);
 
-export const getLinks = () => GET<DatasetListItemType[]>(`/graph/linksList`);
+export const getLinks = (params?: any) => GET<{ data: any[] }>(`/graph/linksList`, params);
 
 export const newNode = (data: POSTNewNodeBody) =>
   POST<DatasetListItemType[]>(`/graph/newNode`, data);
@@ -21,6 +22,6 @@ export const editNode = (data: POSTNewNodeBody) =>
 export const deleteNode = (data: POSTNewNodeBody) =>
   POST<DatasetListItemType[]>(`/graph/deleteNode`, data);
 
-export const newLink = () => POST<DatasetListItemType[]>(`/graph/newLink`);
+export const newLink = (data: any) => POST<DatasetListItemType[]>(`/graph/newLink`, data);
 
 export const deleteLink = () => POST<DatasetListItemType[]>(`/graph/deleteLink`);

@@ -3,7 +3,8 @@ import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/compo
 import { GraphChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
 import ReactECharts from 'echarts-for-react';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { getLinks, getNodes } from '@/web/core/graph/api';
 
 echarts.use([TitleComponent, TooltipComponent, LegendComponent, GraphChart, CanvasRenderer]);
 
@@ -199,21 +200,37 @@ const graph = {
     { source: 's1_3', target: 'a12' },
     { source: 's5_1', target: 'a12' }
   ],
-  categories: [
-    { name: '事件大类', symbolSize: 80 },
-    { name: '事件小类', symbolSize: 60 },
-    {
-      name: '事件地址',
-      shape: 'rect',
-      symbol: 'rect',
-      width: 100,
-      height: 20,
-      symbolSize: [100, 20]
-    }
-  ]
+  categories: [{ name: 'bigcategory' }, { name: 'smallcategory' }, { name: 'event' }]
 };
 
 const RelationGraph: React.FC = () => {
+  const [nodes, setNodes] = useState<any[]>([]);
+  const [links, setLinks] = useState<any[]>([]);
+
+  useEffect(() => {
+    getNodes().then((res) => {
+      setNodes(
+        res.data.map(function (item) {
+          return {
+            id: item.id,
+            name: item.name,
+            category: item.type
+          };
+        })
+      );
+    });
+    getLinks().then((res) => {
+      setLinks(
+        res.data.map((item: { r: { startNodeElementId: string; endNodeElementId: string } }) => ({
+          source: item.r.startNodeElementId,
+          target: item.r.endNodeElementId
+        }))
+      );
+    });
+  }, []);
+
+  console.log('nodes', nodes, links);
+
   const options = useMemo(() => {
     return {
       title: {
@@ -253,16 +270,8 @@ const RelationGraph: React.FC = () => {
           },
           roam: true,
           layout: 'force',
-          data: graph.nodes.map((item) =>
-            item.category === 2
-              ? {
-                  ...item,
-                  symbol: 'rect',
-                  symbolSize: [100, 20]
-                }
-              : item
-          ),
-          links: graph.links,
+          data: nodes,
+          links: links,
           categories: graph.categories,
           label: {
             show: true,
@@ -271,7 +280,7 @@ const RelationGraph: React.FC = () => {
         }
       ]
     };
-  }, []);
+  }, [links, nodes]);
 
   return (
     <ReactECharts

@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { RefObject, useImperativeHandle, useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import type { ProColumns } from '@ant-design/pro-components';
 import dynamic from 'next/dynamic';
 import { useToast } from '@fastgpt/web/hooks/useToast';
 import { deleteNode, editNode, getNodes, newNode } from '@/web/core/graph/api';
 import { useConfirm } from '@fastgpt/web/hooks/useConfirm';
+import { NodeTypeMap } from '..';
 
-const EditableProTable = dynamic(
-  (): any => import('@ant-design/pro-components').then((item) => item.EditableProTable),
+const ProTable = dynamic(
+  (): any => import('@ant-design/pro-components').then((item) => item.ProTable),
   {
     ssr: false
   }
@@ -19,12 +19,10 @@ type DataSourceType = {
   type: string;
 };
 
-export const NodeTypes = {
-  bigcategory: { value: 'bigcategory', label: '事件大类', color: 'red' },
-  smallcategory: { value: 'smallcategory', label: '事件小类', color: 'yellow' }
-};
-
-const NodeListTable: React.FC = () => {
+const NodeListTable: React.FC<{
+  myRef: any;
+  editTableNode: (data: DataSourceType) => void;
+}> = ({ myRef, editTableNode }) => {
   const { toast } = useToast();
 
   const { t } = useTranslation();
@@ -49,24 +47,20 @@ const NodeListTable: React.FC = () => {
     },
     {
       title: `名称`,
-      dataIndex: 'name',
-      formItemProps: () => {
-        return {
-          rules: [{ required: true, message: '此项为必填项' }]
-        };
-      }
+      dataIndex: 'name'
     },
     {
       title: '类型',
       dataIndex: 'type',
       valueEnum: {
-        [NodeTypes.bigcategory.value]: {
-          text: NodeTypes.bigcategory.label,
-          status: 'Error'
+        [NodeTypeMap.bigcategory.value]: {
+          text: NodeTypeMap.bigcategory.label
         },
-        [NodeTypes.smallcategory.value]: {
-          text: NodeTypes.smallcategory.label,
-          status: 'Success'
+        [NodeTypeMap.smallcategory.value]: {
+          text: NodeTypeMap.smallcategory.label
+        },
+        [NodeTypeMap.event.value]: {
+          text: NodeTypeMap.event.label
         }
       },
       formItemProps: () => {
@@ -76,6 +70,17 @@ const NodeListTable: React.FC = () => {
       }
     },
     {
+      title: `内容/地址`,
+      dataIndex: 'content',
+      hideInSearch: true,
+      renderFormItem: (_, { content, address }: any) => content || address
+    },
+    {
+      title: `创建时间`,
+      dataIndex: 'createTime',
+      hideInSearch: true
+    },
+    {
       title: '操作',
       valueType: 'option',
       width: 200,
@@ -83,7 +88,7 @@ const NodeListTable: React.FC = () => {
         <a
           key="editable"
           onClick={() => {
-            action?.startEditable?.(record.id);
+            editTableNode(record);
           }}
         >
           编辑
@@ -105,64 +110,31 @@ const NodeListTable: React.FC = () => {
 
   return (
     <>
-      <EditableProTable<DataSourceType>
+      <ProTable
         rowKey="id"
         headerTitle=""
+        actionRef={myRef}
         recordCreatorProps={{
-          position: 'bottom',
-          record: () => ({})
+          position: 'top',
+          record: () => ({ id: (Math.random() * 1000000).toFixed(0) })
         }}
         className="nodeListTable"
-        search={true}
+        search={{ labelWidth: 'auto', span: 4, className: 'lightSearch' }}
         loading={false}
         columns={columns}
-        request={async () => {
-          const res = await getNodes();
+        toolBarRender={false}
+        request={async (params: any) => {
+          const { data } = await getNodes(params);
           return {
-            data: res,
-            total: res.length,
+            data: data,
+            total: data.length,
             success: true
           };
         }}
-        value={dataSource}
-        editable={{
-          type: 'multiple',
-          editableKeys,
-          onChange: setEditableRowKeys,
-          onSave: async (_: any, record: any, originObj: any, newLineConfig: any) => {
-            console.log('newLineConfig', newLineConfig);
-            try {
-              if (newLineConfig) {
-                await newNode({
-                  name: record.name,
-                  type: record.type
-                });
-              } else {
-                if (record.name === originObj.name && record.type === originObj.type) {
-                  return;
-                }
-                await editNode({
-                  name: record.name as string,
-                  type: record.type,
-                  ...(originObj.type === record.type ? {} : { oldType: originObj.type }),
-                  id: record.id
-                });
-              }
-              toast({
-                status: 'success',
-                title: `${newLineConfig ? '新建' : '编辑'}节点成功`
-              });
-            } catch (error: Error) {
-              toast({
-                status: 'error',
-                title: error.message
-              });
-            } finally {
-              const res = await getNodes();
-              setDataSource(res as any);
-            }
-          }
+        pagination={{
+          pageSize: 10
         }}
+        value={dataSource}
       />
       <ConfirmModal />
     </>

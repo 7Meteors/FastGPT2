@@ -1,18 +1,26 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { jsonRes } from '@fastgpt/service/common/response';
 import { driver } from '@fastgpt/service/common/neo4j/index';
+import dayjs from 'dayjs';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   try {
     const session = driver.session();
 
-    const { name, type } = req.body as {
+    const {
+      name,
+      type,
+      content = '',
+      address = ''
+    } = req.body as {
       name: string;
       type: string;
+      content: string;
+      address: string;
     };
 
     const sameNameNode = await session.run(
-      `MATCH (n:${type} {name: $name})
+      `MATCH (n:${type} {name: "${name}"})
       RETURN n`,
       { type, name }
     );
@@ -23,10 +31,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       });
     }
 
+    const createTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
     const result = await session.run(
-      `CREATE (n:${type} {name: $name})
+      `CREATE (n:${type} {name: "${name}", createTime: $createTime ${content ? `,content: "${content}"` : ''} ${address ? `,address: "${address}"` : ''}})
        RETURN n`,
-      { type, name }
+      { type, name, createTime }
     );
 
     jsonRes(res, {

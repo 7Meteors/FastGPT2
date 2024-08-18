@@ -6,47 +6,49 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   try {
     const session = driver.session();
 
-    const { name, type, id, oldType } = req.body as {
+    const {
+      name,
+      type,
+      id,
+      oldName,
+      content = '',
+      address = ''
+    } = req.body as {
       name: string;
       type: string;
-      oldType: string;
+      oldName: string;
       id: string;
+      content?: string;
+      address?: string;
     };
 
-    const sameNameNode = await session.run(
-      `MATCH (n:${type} {name: $name})
+    if (oldName) {
+      const sameNameNode = await session.run(
+        `MATCH (n:${type} {name: "${name}"})
         RETURN n`,
-      { type, name, id }
-    );
-    if (sameNameNode.records.length) {
-      jsonRes(res, {
-        code: 500,
-        error: '节点重复'
-      });
+        { type, name, id }
+      );
+      if (sameNameNode.records.length) {
+        jsonRes(res, {
+          code: 500,
+          error: '节点重复'
+        });
+      }
     }
 
     const result = await session.run(
-      `MATCH (n:${oldType} {id: $id})
-        SET n.name = $name
-        ${
-          oldType
-            ? `SET n:${type}
-              REMOVE n:${oldType}`
-            : ''
-        }
+      `MATCH (n:${type} {id: $id})  
+      ${oldName ? `SET n.name = "${name}"` : ''}
+      ${content ? `SET n.content = ${content}` : ''}
+      ${address ? `SET n.address = ${address}` : ''}
         RETURN n`,
       { type, name, id }
     );
 
+    console.log(result);
+
     jsonRes(res, {
-      data: result.records.map((r: { get: (arg0: string) => any }) => {
-        const node = r.get('n');
-        return {
-          id: node.elementId,
-          name: node.properties?.name,
-          type: node.labels[0]
-        };
-      })
+      data: result.records
     });
     session.close();
   } catch (err) {
