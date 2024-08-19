@@ -71,7 +71,7 @@ const ConfigPerModal = ({
               hasParent={hasParent}
             />
           </Box>
-          <Box mt={4}>
+          {/* <Box mt={4}>
             <CollaboratorContextProvider
               {...managePer}
               refetchResource={refetchResource}
@@ -112,7 +112,7 @@ const ConfigPerModal = ({
                 );
               }}
             </CollaboratorContextProvider>
-          </Box>
+          </Box> */}
         </ModalBody>
       </MyModal>
     </>

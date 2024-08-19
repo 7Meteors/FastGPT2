@@ -33,10 +33,10 @@ const RouteTab = () => {
       },
       ...(appDetail.permission.hasManagePer
         ? [
-            // {
-            //   label: appT('publish_channel'),
-            //   id: TabEnum.publish
-            // },
+            {
+              label: appT('publish_channel'),
+              id: TabEnum.publish
+            },
             { label: appT('chat_logs'), id: TabEnum.logs }
           ]
         : [])

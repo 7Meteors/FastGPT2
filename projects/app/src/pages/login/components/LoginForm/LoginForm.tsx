@@ -143,15 +143,20 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
         {feConfigs?.show_register && (
           <>
             <Flex align={'center'} justifyContent={'flex-end'} color={'primary.700'}>
-              {/* <Box
+              <Box
                 cursor={'pointer'}
                 _hover={{ textDecoration: 'underline' }}
-                onClick={() => setPageType('forgetPassword')}
+                onClick={() =>
+                  toast({
+                    title: '请联系管理员重置为初始密码',
+                    status: 'info'
+                  })
+                }
                 fontSize="sm"
               >
                 {t('common:support.user.login.Forget Password')}
               </Box>
-              <Box mx={3} h={'16px'} w={'1.5px'} bg={'myGray.250'}></Box> */}
+              <Box mx={3} h={'16px'} w={'1.5px'} bg={'myGray.250'}></Box>
               <Box
                 cursor={'pointer'}
                 _hover={{ textDecoration: 'underline' }}

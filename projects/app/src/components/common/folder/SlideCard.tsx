@@ -153,7 +153,7 @@ const FolderSlideCard = ({
                 />
               </Box>
             )}
-            <Box mt={6}>
+            {/* <Box mt={6}>
               <CollaboratorContextProvider
                 {...managePer}
                 refreshDeps={refreshDeps}
@@ -202,7 +202,7 @@ const FolderSlideCard = ({
                   );
                 }}
               </CollaboratorContextProvider>
-            </Box>
+            </Box> */}
           </Box>
         </>
       )}

@@ -216,7 +216,7 @@ const InfoModal = ({ onClose }: { onClose: () => void }) => {
                 hasParent={!!appDetail.parentId}
               />
             </Box>
-            <Box mt={6}>
+            {/* <Box mt={6}>
               <CollaboratorContextProvider
                 permission={appDetail.permission}
                 onGetCollaboratorList={() => getCollaboratorList(appDetail._id)}
@@ -261,7 +261,7 @@ const InfoModal = ({ onClose }: { onClose: () => void }) => {
                   );
                 }}
               </CollaboratorContextProvider>
-            </Box>
+            </Box> */}
           </>
         )}
       </ModalBody>

@@ -151,15 +151,15 @@ const MyApps = () => {
                 {
                   label: appT('type.Simple bot'),
                   value: AppTypeEnum.simple
-                },
-                {
-                  label: appT('type.Workflow bot'),
-                  value: AppTypeEnum.workflow
-                },
-                {
-                  label: appT('type.Plugin'),
-                  value: AppTypeEnum.plugin
                 }
+                // {
+                //   label: appT('type.Workflow bot'),
+                //   value: AppTypeEnum.workflow
+                // },
+                // {
+                //   label: appT('type.Plugin'),
+                //   value: AppTypeEnum.plugin
+                // }
               ]}
               value={appType}
               inlineStyles={{ px: 0.5 }}
@@ -198,25 +198,25 @@ const MyApps = () => {
                           label: appT('type.Simple bot'),
                           description: appT('type.Create simple bot tip'),
                           onClick: () => setCreateAppType(AppTypeEnum.simple)
-                        },
-                        {
-                          icon: 'core/app/type/workflowFill',
-                          label: appT('type.Workflow bot'),
-                          description: appT('type.Create workflow tip'),
-                          onClick: () => setCreateAppType(AppTypeEnum.workflow)
-                        },
-                        {
-                          icon: 'core/app/type/pluginFill',
-                          label: appT('type.Plugin'),
-                          description: appT('type.Create one plugin tip'),
-                          onClick: () => setCreateAppType(AppTypeEnum.plugin)
-                        },
-                        {
-                          icon: 'core/app/type/httpPluginFill',
-                          label: appT('type.Http plugin'),
-                          description: appT('type.Create http plugin tip'),
-                          onClick: onOpenCreateHttpPlugin
                         }
+                        // {
+                        //   icon: 'core/app/type/workflowFill',
+                        //   label: appT('type.Workflow bot'),
+                        //   description: appT('type.Create workflow tip'),
+                        //   onClick: () => setCreateAppType(AppTypeEnum.workflow)
+                        // },
+                        // {
+                        //   icon: 'core/app/type/pluginFill',
+                        //   label: appT('type.Plugin'),
+                        //   description: appT('type.Create one plugin tip'),
+                        //   onClick: () => setCreateAppType(AppTypeEnum.plugin)
+                        // },
+                        // {
+                        //   icon: 'core/app/type/httpPluginFill',
+                        //   label: appT('type.Http plugin'),
+                        //   description: appT('type.Create http plugin tip'),
+                        //   onClick: onOpenCreateHttpPlugin
+                        // }
                       ]
                     },
                     {
