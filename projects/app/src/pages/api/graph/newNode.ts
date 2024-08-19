@@ -11,12 +11,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       name,
       type,
       content = '',
-      address = ''
+      address = '',
+      status = ''
     } = req.body as {
       name: string;
       type: string;
-      content: string;
-      address: string;
+      content?: string;
+      address?: string;
+      status?: string;
     };
 
     const sameNameNode = await session.run(
@@ -33,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const createTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
     const result = await session.run(
-      `CREATE (n:${type} {name: "${name}", createTime: $createTime ${content ? `,content: "${content}"` : ''} ${address ? `,address: "${address}"` : ''}})
+      `CREATE (n:${type} {name: "${name}", createTime: $createTime ${content ? `,content: "${content}"` : ''} ${address ? `,address: "${address}"` : ''} ${status ? `,status: "${status}"` : ''}})
        RETURN n`,
       { type, name, createTime }
     );

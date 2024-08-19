@@ -2,8 +2,7 @@ import * as echarts from 'echarts/core';
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
 import { GraphChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
-import ReactECharts from 'echarts-for-react';
-import React, { useMemo } from 'react';
+import React, { useEffect } from 'react';
 import {
   Box,
   Flex,
@@ -15,10 +14,23 @@ import {
   StatNumber,
   Text
 } from '@chakra-ui/react';
+import { querySummary } from '@/web/core/graph/api';
 
 echarts.use([TitleComponent, TooltipComponent, LegendComponent, GraphChart, CanvasRenderer]);
 
 const StatisticalGraphA: React.FC = () => {
+  const [loading, setLoading] = React.useState(true);
+  const [pageData, setPageData] = React.useState({});
+
+  useEffect(() => {
+    async function fetchData() {
+      await querySummary().then((res) => {
+        console.log(res);
+      });
+    }
+    fetchData();
+  }, []);
+
   return (
     <Flex grow={1} flexDirection="column" justifyContent="space-between">
       <Text fontSize="18" fontWeight="bold" textTransform="uppercase">

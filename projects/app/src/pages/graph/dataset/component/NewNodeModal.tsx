@@ -19,6 +19,12 @@ const transToValueEnum = (data: any) => {
   return result;
 };
 
+const eventStatusMap = {
+  caseClosed: '结案',
+  caseRefused: '不立案',
+  caseToBeFiled: '待立案'
+};
+
 const NewNodeModal = ({
   onFinish,
   open,
@@ -89,7 +95,17 @@ const NewNodeModal = ({
               case NodeTypeMap.smallcategory.value:
                 return <ProFormText name="content" rules={[{ required: true }]} label="内容" />;
               case NodeTypeMap.event.value:
-                return <ProFormText name="address" label="地址" />;
+                return (
+                  <>
+                    <ProFormText name="address" label="地址" />
+                    <ProFormSelect
+                      name="status"
+                      label="事件状态"
+                      rules={[{ required: true }]}
+                      valueEnum={eventStatusMap}
+                    />
+                  </>
+                );
               default:
                 break;
             }
