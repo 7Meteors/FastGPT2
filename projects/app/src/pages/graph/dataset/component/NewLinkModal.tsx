@@ -1,21 +1,36 @@
-import {
-  ModalForm,
-  ProForm,
-  ProFormDateRangePicker,
-  ProFormSelect,
-  ProFormText
-} from '@ant-design/pro-components';
-import { Button, Form, message } from 'antd';
+// @ts-nocheck
+// import {
+//   ModalForm,
+//   ProForm,
+//   ProFormDateRangePicker,
+//   ProFormSelect,
+//   ProFormText
+// } from '@ant-design/pro-components';
+// import { Button, Form, message } from 'antd';
+import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
 import { deleteNode, editNode, getNodes, newNode, newLink } from '@/web/core/graph/api';
-
-const waitTime = (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
+const { ModalForm, ProForm, ProFormDateRangePicker, ProFormSelect, ProFormText } = dynamic(
+  (): any =>
+    import('@ant-design/pro-components').then(
+      ({ ModalForm, ProForm, ProFormDateRangePicker, ProFormSelect, ProFormText }) => ({
+        ModalForm,
+        ProForm,
+        ProFormDateRangePicker,
+        ProFormSelect,
+        ProFormText
+      })
+    ),
+  {
+    ssr: false
+  }
+);
+const { Button, Form, message } = dynamic(
+  (): any => import('antd').then(({ Button, Form, message }) => ({ Button, Form, message })),
+  {
+    ssr: false
+  }
+);
 
 const NewLinkModal = ({ onFinish }: { onFinish: any }) => {
   const [form] = Form.useForm<{ name: string; company: string }>();

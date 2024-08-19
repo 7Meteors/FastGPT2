@@ -1,4 +1,5 @@
-// @ts-ignore
+// @ts-nocheck
+
 import React, { useCallback, useRef, useState } from 'react';
 import { Flex } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';

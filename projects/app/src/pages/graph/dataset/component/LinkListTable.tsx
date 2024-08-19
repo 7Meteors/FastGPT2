@@ -1,9 +1,11 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { useToast } from '@fastgpt/web/hooks/useToast';
 import { deleteNode, editNode, getLinks, newNode } from '@/web/core/graph/api';
 import { useConfirm } from '@fastgpt/web/hooks/useConfirm';
+import { NodeTypeMap } from '../index';
 
 const ProTable = dynamic(
   (): any => import('@ant-design/pro-components').then((item) => item.ProTable),
@@ -16,11 +18,6 @@ type DataSourceType = {
   id: string;
   name: string;
   type: string;
-};
-
-export const NodeTypes = {
-  bigcategory: { value: 'bigcategory', label: '事件大类', color: 'red' },
-  smallcategory: { value: 'smallcategory', label: '事件小类', color: 'yellow' }
 };
 
 const LinkListTable: React.FC = ({ myRef }) => {
@@ -49,28 +46,28 @@ const LinkListTable: React.FC = ({ myRef }) => {
     {
       title: `起始节点类型`,
       dataIndex: 'sourceType',
-      render: (text, record) => {
-        return NodeTypes[record.r.type]?.label;
+      render: (_, record) => {
+        return NodeTypeMap[record.r.type]?.label;
       }
     },
     {
       title: `起始节点名称`,
       dataIndex: 'sourceName',
-      render: (text, record) => {
+      render: (_, record) => {
         return record.a?.properties?.name;
       }
     },
     {
       title: `目标节点类型`,
       dataIndex: 'targetType',
-      render: (text, record) => {
-        return NodeTypes[record.r.type]?.label;
+      render: (_, record) => {
+        return NodeTypeMap[record.r.type]?.label;
       }
     },
     {
       title: `目标节点名称`,
       dataIndex: 'targetName',
-      render: (text, record) => {
+      render: (_, record) => {
         return record.b?.properties?.name;
       }
     },

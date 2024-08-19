@@ -15,24 +15,24 @@ const AppTypeTag = ({ type }: { type: AppTypeEnum }) => {
       bg: '#DBF3FF',
       color: '#0884DD'
     },
-    // [AppTypeEnum.workflow]: {
-    //   label: appT('type.Workflow bot'),
-    //   icon: 'core/app/type/workflow',
-    //   bg: '#E4E1FC',
-    //   color: '#6F5DD7'
-    // },
-    // [AppTypeEnum.plugin]: {
-    //   label: appT('type.Plugin'),
-    //   icon: 'core/app/type/plugin',
-    //   bg: '#D0F5EE',
-    //   color: '#007E7C'
-    // },
-    // [AppTypeEnum.httpPlugin]: {
-    //   label: appT('type.Http plugin'),
-    //   icon: 'core/app/type/httpPlugin',
-    //   bg: '#FFE4EE',
-    //   color: '#E82F72'
-    // },
+    [AppTypeEnum.workflow]: {
+      label: appT('type.Workflow bot'),
+      icon: 'core/app/type/workflow',
+      bg: '#E4E1FC',
+      color: '#6F5DD7'
+    },
+    [AppTypeEnum.plugin]: {
+      label: appT('type.Plugin'),
+      icon: 'core/app/type/plugin',
+      bg: '#D0F5EE',
+      color: '#007E7C'
+    },
+    [AppTypeEnum.httpPlugin]: {
+      label: appT('type.Http plugin'),
+      icon: 'core/app/type/httpPlugin',
+      bg: '#FFE4EE',
+      color: '#E82F72'
+    },
     [AppTypeEnum.folder]: undefined
   });
 
