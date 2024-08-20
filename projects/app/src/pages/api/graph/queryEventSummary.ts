@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const statusCounts: Record<string, number> = {};
     statusCountsResult.records.forEach((record: { get: any }) => {
-      statusCounts[record.get('status')] = record.get('count').low;
+      statusCounts[record.get('status')] = record.get('count')?.low || 0;
     });
 
     statusCounts.total = totalCountResult.records[0].get('totalCount').low;

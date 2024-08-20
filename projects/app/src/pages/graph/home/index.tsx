@@ -49,16 +49,16 @@ const Dataset = () => {
           <Grid
             flexGrow={1}
             py={5}
-            gridTemplateColumns={['1fr', 'repeat(2,1fr)', 'repeat(3,1fr)', 'repeat(4,1fr)']}
+            gridTemplateColumns={['1fr', 'repeat(2,1fr)', 'repeat(3,1fr)']}
             gridGap={5}
             userSelect={'none'}
           >
             <BlockWrapper>
               <StatisticalGraphA />
             </BlockWrapper>
-            <BlockWrapper>
+            {/* <BlockWrapper>
               <StatisticalGraphB />
-            </BlockWrapper>
+            </BlockWrapper> */}
             <BlockWrapper>
               <StatisticalGraphC />
             </BlockWrapper>

@@ -3,8 +3,9 @@ import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/compo
 import { GraphChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
 import ReactECharts from 'echarts-for-react';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Box, Flex, Text } from '@chakra-ui/react';
+import { queryNodeSummary } from '@/web/core/graph/api';
 
 echarts.use([TitleComponent, TooltipComponent, LegendComponent, GraphChart, CanvasRenderer]);
 
@@ -17,6 +18,21 @@ const data = [
 ];
 
 const StatisticalGraphD: React.FC = () => {
+  const [loading, setLoading] = React.useState(true);
+  const [pageData, setPageData] = React.useState(
+    {} as { total: number; caseClosed: number; caseRefused: number; caseToBeFiled: number }
+  );
+
+  useEffect(() => {
+    async function fetchData() {
+      await queryNodeSummary().then((res: any) => {
+        setPageData(res?.data || {});
+        setLoading(false);
+      });
+    }
+    fetchData();
+  }, []);
+
   const options = useMemo(() => {
     return {
       grid: {

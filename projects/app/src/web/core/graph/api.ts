@@ -11,7 +11,8 @@ type POSTNewNodeBody = {
 export const getNodes = (params?: { name?: string; type?: string }) =>
   GET<{ data: any[] }>(`/graph/nodesList`, params);
 
-export const querySummary = () => GET(`/graph/querySummary`);
+export const queryEventSummary = () => GET(`/graph/queryEventSummary`);
+export const queryNodeSummary = () => GET(`/graph/queryNodeSummary`);
 
 export const getLinks = (params?: any) => GET<{ data: any[] }>(`/graph/linksList`, params);
 
