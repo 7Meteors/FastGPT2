@@ -16,8 +16,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       RETURN COUNT(e) AS totalCount`
     );
 
-    console.log(statusCountsResult.records);
-
     const statusCounts: Record<string, number> = {};
     statusCountsResult.records.forEach((record: { get: any }) => {
       statusCounts[record.get('status')] = record.get('count')?.low || 0;

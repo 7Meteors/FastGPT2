@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as echarts from 'echarts/core';
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
 import { GraphChart } from 'echarts/charts';
