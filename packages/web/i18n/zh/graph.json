@@ -8,6 +8,19 @@
     "Event subclass": "事件小类",
     "Event connection": "事件关联",
     "node": "节点",
-    "link": "关联"
+    "link": "关联",
+    "event": "事件",
+    "new event": "新增事件",
+    "edit event": "编辑事件",
+    "category": "分类",
+    "new category": "新增分类",
+    "edit category": "编辑分类",
+    "event issue": "主题",
+    "event address": "地址",
+    "event created_at": "创建时间",
+    "event urgency": "紧急程度",
+    "event smallcategory": "所属小类",
+    "event bigcategory": "所属大类",
+    "event id": "序号"
   }
 }

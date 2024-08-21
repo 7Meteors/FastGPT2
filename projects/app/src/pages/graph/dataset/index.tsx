@@ -1,5 +1,4 @@
 // @ts-nocheck
-
 import React, { useCallback, useRef, useState } from 'react';
 import { Flex } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
@@ -9,15 +8,10 @@ import { useRouter } from 'next/router';
 import LightRowTabs from '@fastgpt/web/components/common/Tabs/LightRowTabs';
 import { newNode } from '@/web/core/graph/api';
 import { Button } from 'antd';
-
-const NodeListTable = dynamic(() => import('./component/NodeListTable'));
-const LinkListTable = dynamic(() => import('./component/LinkListTable'));
-const NewNodeModal = dynamic(() => import('./component/NewNodeModal').then((item) => item), {
-  ssr: false
-});
-const NewLinkModal = dynamic((): any => import('./component/NewLinkModal').then((item) => item), {
-  ssr: false
-});
+import EventListTable from './component/EventListTable';
+import CategoryListTable from './component/CategoryListTable';
+import EventModal from './component/EventModal';
+import CategoryModal from './component/CategoryModal';
 
 // 备选颜色     紫色：rgb(127, 59, 245)   红色： rgb(245, 74, 69)   深蓝色：rgb(36, 91, 219)
 export const NodeTypeMap: any = {
@@ -45,20 +39,27 @@ export const NodeTypeMap: any = {
 };
 
 export enum DatasetTypeEnum {
-  node = 'node',
-  link = 'link'
+  event = 'event',
+  category = 'category'
 }
 
 const Dataset = () => {
   const { t } = useTranslation();
-  const nodeTableRef = useRef();
-  const linkTableRef = useRef();
-  const [appType, setAppType] = useState(DatasetTypeEnum.node);
+  const eventTableRef = useRef();
+  const categoryTableRef = useRef();
+  const [appType, setAppType] = useState(DatasetTypeEnum.event);
 
-  const [isNewNodeModalVisible, setIsNewNodeModalVisible] = useState(false);
-  const [editNodeData, setEditNodeData] = useState<any>();
+  const [isEventModalVisible, setIsEventModalVisible] = useState(false);
+  const [isCategoryModalVisible, setIsCategoryModalVisible] = useState(false);
+  const [editEventData, setEditEventData] = useState<any>();
+  const [editCategoryData, setEditCategoryData] = useState<any>();
 
-  const editTableNode = useCallback((nodeData: any) => {
+  const editTableEvent = useCallback((eventData: any) => {
+    setEditNodeData(nodeData);
+    setIsEventModalVisible(true);
+  }, []);
+
+  const editTableCategory = useCallback((categoryData: any) => {
     setEditNodeData(nodeData);
     setIsNewNodeModalVisible(true);
   }, []);
@@ -70,12 +71,12 @@ const Dataset = () => {
           <LightRowTabs
             list={[
               {
-                label: t('graph:dataset.node'),
-                value: DatasetTypeEnum.node
+                label: t('graph:dataset.event'),
+                value: DatasetTypeEnum.event
               },
               {
-                label: t('graph:dataset.link'),
-                value: DatasetTypeEnum.link
+                label: t('graph:dataset.category'),
+                value: DatasetTypeEnum.category
               }
             ]}
             inlineStyles={{ px: 0.5 }}
@@ -87,46 +88,60 @@ const Dataset = () => {
             value={appType}
             onChange={setAppType}
           />
-          {appType === DatasetTypeEnum.node && (
+          {appType === DatasetTypeEnum.event && (
             <Button
               type="primary"
               onClick={() => {
-                editTableNode(null);
+                editEventData(null);
               }}
             >
-              新建节点
+              {t('graph:dataset.new event')}
             </Button>
           )}
-          {appType === DatasetTypeEnum.link && (
-            <NewLinkModal
-              onFinish={() => {
-                linkTableRef.current?.reload();
+          {appType === DatasetTypeEnum.category && (
+            <Button
+              type="primary"
+              onClick={() => {
+                editCategoryData(null);
               }}
-            />
+            >
+              {t('graph:dataset.new category')}
+            </Button>
           )}
         </Flex>
-        <NewNodeModal
-          open={isNewNodeModalVisible}
-          editNodeData={editNodeData}
+        <EventModal
+          open={isEventModalVisible}
+          editData={editEventData}
           onClose={() => {
-            setIsNewNodeModalVisible(false);
+            setIsEventModalVisible(false);
           }}
           onFinish={() => {
-            setIsNewNodeModalVisible(false);
-            nodeTableRef.current?.reload();
+            setIsEventModalVisible(false);
+            eventTableRef.current?.reload();
+          }}
+        />
+        <CategoryModal
+          open={isCategoryModalVisible}
+          editData={editCategoryData}
+          onClose={() => {
+            setIsCategoryModalVisible(false);
+          }}
+          onFinish={() => {
+            setIsCategoryModalVisible(false);
+            categoryTableRef.current?.reload();
           }}
         />
         <Flex alignItems={'center'}>
-          {appType === DatasetTypeEnum.node && (
+          {appType === DatasetTypeEnum.event && (
             <div style={{ flex: 1, width: '100%' }}>
-              <NodeListTable myRef={nodeTableRef} editTableNode={editTableNode} />
+              <EventListTable myRef={eventTableRef} editTableRow={editTableEvent} />
             </div>
           )}
-          {appType === DatasetTypeEnum.link && (
+          {/* {appType === DatasetTypeEnum.category && (
             <div style={{ flex: 1, width: '100%' }}>
-              <LinkListTable myRef={linkTableRef} />
+              <CategoryListTable myRef={categoryTableRef} editTableRow={editTableCategory} />
             </div>
-          )}
+          )} */}
         </Flex>
       </Flex>
     </Flex>

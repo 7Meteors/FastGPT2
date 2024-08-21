@@ -25,7 +25,7 @@ const eventStatusMap = {
   caseToBeFiled: '待立案'
 };
 
-const NewNodeModal = ({
+const EventModal = ({
   onFinish,
   open,
   editNodeData,
@@ -116,4 +116,4 @@ const NewNodeModal = ({
   );
 };
 
-export default NewNodeModal;
+export default EventModal;

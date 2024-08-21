@@ -12,8 +12,8 @@ import { serviceSideProps } from '@/web/common/utils/i18n';
 import { useTranslation } from 'next-i18next';
 import { useSystem } from '@fastgpt/web/hooks/useSystem';
 
-const Dashboard = dynamic(() => import('./home'));
-const Dataset = dynamic(() => import('./dataset'));
+const Dashboard = dynamic(() => import('./home'), { ssr: false });
+const Dataset = dynamic(() => import('./dataset'), { ssr: false });
 
 enum TabEnum {
   'dashboard' = 'dashboard',

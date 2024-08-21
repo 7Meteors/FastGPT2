@@ -8,6 +8,18 @@
     "Event subclass": "Event subclass",
     "Event connection": "Event connection",
     "node": "Nodes",
-    "link": "Links"
+    "link": "Links",
+    "event": "Event",
+    "new event": "New Event",
+    "edit event": "Edit Event",
+    "category": "Category",
+    "new category": "New Category",
+    "edit category": "Edit Category",
+    "event issue": "Issue",
+    "event address": "Address",
+    "event urgency": "Urgency",
+    "event smallcategory": "Small Category",
+    "event bigcategory": "Big Category",
+    "event id": "ID"
   }
 }
