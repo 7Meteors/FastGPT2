@@ -5,8 +5,8 @@ import { driver } from '@fastgpt/service/common/neo4j/index';
 import { toNumber } from 'neo4j-driver-core/lib/integer.js';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
+  const session = driver.session();
   try {
-    const session = driver.session();
     const { name, type } = req.query as {
       name?: string;
       type?: string;
@@ -31,11 +31,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         })
       }
     });
-    session.close();
   } catch (err) {
     jsonRes(res, {
       code: 500,
       error: err
     });
+  } finally {
+    session.close();
   }
 }

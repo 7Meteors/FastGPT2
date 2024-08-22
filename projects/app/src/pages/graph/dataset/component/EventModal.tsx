@@ -82,7 +82,7 @@ const EventModal = ({
             onFinish();
             return true;
           } catch (error) {
-            message.error('提交失败');
+            // message.error('提交失败');
             return false;
           }
         }}

@@ -8,6 +8,7 @@ import { clearToken } from '@/web/support/user/auth';
 import { TOKEN_ERROR_CODE } from '@fastgpt/global/common/error/errorCode';
 import { TeamErrEnum } from '@fastgpt/global/common/error/code/team';
 import { useSystemStore } from '../system/useSystemStore';
+import { message } from 'antd';
 
 interface ConfigType {
   headers?: { [key: string]: string };
@@ -105,6 +106,10 @@ function responseError(err: any) {
   }
   if (typeof err === 'string') {
     return Promise.reject({ message: err });
+  }
+  // 自定义错误码及错误信息提示
+  if (err?.response?.status === 501 && err?.response?.data?.message) {
+    message.error(err.response.data.message);
   }
   // 有报错响应
   if (err?.code in TOKEN_ERROR_CODE) {

@@ -24,14 +24,17 @@ export const getLinks = (params?: any) => GET<{ data: any[] }>(`/graph/linksList
 export const newNode = (data: POSTNewNodeBody) =>
   POST<DatasetListItemType[]>(`/graph/newNode`, data);
 
+export const newBigcategory = (data: any) => POST(`/graph/newBigcategory`, data);
+export const newSmallcategory = (data: any) => POST(`/graph/newSmallcategory`, data);
+export const editBigcategory = (data: any) => POST(`/graph/editBigcategory`, data);
+export const editSmallcategory = (data: any) => POST(`/graph/editSmallcategory`, data);
+
 export const editNode = (data: POSTNewNodeBody) =>
   POST<DatasetListItemType[]>(`/graph/editNode`, data);
 
-export const deleteNode = (data: POSTNewNodeBody) =>
-  POST<DatasetListItemType[]>(`/graph/deleteNode`, data);
-
-export const deleteEvent = (data: { id: number }) =>
-  POST<DatasetListItemType[]>(`/graph/deleteEvent`, data);
+export const deleteSmallcategory = (data: { id: string }) =>
+  DELETE(`/graph/deleteSmallcategory`, data);
+export const deleteBigcategory = (data: { id: string }) => DELETE(`/graph/deleteBigcategory`, data);
 
 export const newLink = (data: any) => POST<DatasetListItemType[]>(`/graph/newLink`, data);
 

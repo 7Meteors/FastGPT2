@@ -4,7 +4,9 @@ import {
   deleteEvent,
   getCategoriesMap,
   bigcategoryList,
-  smallcategoryList
+  smallcategoryList,
+  deleteSmallcategory,
+  deleteBigcategory
 } from '@/web/core/graph/api';
 import { useConfirm } from '@fastgpt/web/hooks/useConfirm';
 import { ProColumns, ProTable } from '@ant-design/pro-components';
@@ -83,8 +85,8 @@ const CategoryListTable: React.FC<{
               dataIndex: 'category_big_sym',
               hideInSearch: true,
               render: (_: any, record: any) => {
-                if (categoryData?.smallCategories) {
-                  return categoryData?.smallCategories?.[record?.category_small_sym]?.name;
+                if (categoryData?.bigCategories) {
+                  return categoryData?.bigCategories?.[record?.category_big_sym]?.name;
                 } else {
                   return '-';
                 }
@@ -110,7 +112,15 @@ const CategoryListTable: React.FC<{
             style={{ color: 'red' }}
             onClick={async () => {
               openConfirm(async () => {
-                await deleteEvent({ id: record.id });
+                try {
+                  await (
+                    appType === DatasetTypeEnum.smallcategory
+                      ? deleteSmallcategory
+                      : deleteBigcategory
+                  )({ id: record.id });
+                } catch (error: any) {
+                  console.log('error', error);
+                }
                 action?.reloadAndRest?.();
               })();
             }}
@@ -120,7 +130,7 @@ const CategoryListTable: React.FC<{
         ]
       }
     ],
-    [appType, categoryData?.smallCategories, editTableEvent, openConfirm, t]
+    [appType, categoryData?.bigCategories, editTableEvent, openConfirm, t]
   );
 
   return (

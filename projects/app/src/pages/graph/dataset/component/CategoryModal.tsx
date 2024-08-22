@@ -2,8 +2,12 @@ import { ModalForm, ProFormTextArea, ProFormSelect, ProFormText } from '@ant-des
 import { useTranslation } from 'next-i18next';
 import { Form, message } from 'antd';
 import { useEffect } from 'react';
-import { editNode, newNode } from '@/web/core/graph/api';
-import { NodeTypeMap } from '../index';
+import {
+  newBigcategory,
+  newSmallcategory,
+  editBigcategory,
+  editSmallcategory
+} from '@/web/core/graph/api';
 
 const transToValueEnum = (data: any) => {
   const result = {} as any;
@@ -11,12 +15,6 @@ const transToValueEnum = (data: any) => {
     result[key] = data[key].label;
   }
   return result;
-};
-
-const eventStatusMap = {
-  caseClosed: '结案',
-  caseRefused: '不立案',
-  caseToBeFiled: '待立案'
 };
 
 const CategoryModal = ({
@@ -43,7 +41,7 @@ const CategoryModal = ({
     if (editData) {
       form.setFieldsValue(editData || {});
     }
-  }, [editData, form]);
+  }, [editData, form, open]);
 
   return (
     open && (
@@ -52,7 +50,19 @@ const CategoryModal = ({
         company: string;
       }>
         open={open}
-        title={editData?.id ? t('graph:dataset.edit event') : t('graph:dataset.new event')}
+        title={
+          editData?.id
+            ? t(
+                isSmallcategory
+                  ? 'graph:dataset.edit smallcategory'
+                  : 'graph:dataset.edit bigcategory'
+              )
+            : t(
+                isSmallcategory
+                  ? 'graph:dataset.new smallcategory'
+                  : 'graph:dataset.new bigcategory'
+              )
+        }
         form={form}
         autoFocusFirstInput
         modalProps={{
@@ -63,21 +73,23 @@ const CategoryModal = ({
         onFinish={async (values: any) => {
           try {
             console.log('values', values);
-
-            // if (editData?.id) {
-            //   await editNode({
-            //     ...editData,
-            //     ...values,
-            //     ...(editData?.name === values.name ? {} : { oldName: editData?.name })
-            //   });
-            // } else {
-            //   await newNode(values);
-            // }
+            if (editData?.id) {
+              await (isSmallcategory ? editSmallcategory : editBigcategory)({
+                ...editData,
+                ...values,
+                ...(editData?.name === values.name ? {} : { oldName: editData?.name }),
+                ...(editData?.category_big_sym === values.category_big_sym
+                  ? {}
+                  : { old_category_big_sym: editData?.category_big_sym })
+              });
+            } else {
+              await (isSmallcategory ? newSmallcategory : newBigcategory)(values);
+            }
             message.success('提交成功');
             onFinish();
             return true;
           } catch (error) {
-            message.error('提交失败');
+            // message.error('提交失败');
             return false;
           }
         }}
@@ -95,11 +107,7 @@ const CategoryModal = ({
         />
         {isSmallcategory && (
           <>
-            <ProFormTextArea
-              name="content"
-              label={t('graph:dataset.category content')}
-              rules={[{ required: true }]}
-            />
+            <ProFormTextArea name="content" label={t('graph:dataset.category content')} />
             <ProFormText name="unit" label={t('graph:dataset.unit')} />
             <ProFormText name="department" label={t('graph:dataset.department')} />
             <ProFormSelect
