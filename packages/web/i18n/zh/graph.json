@@ -10,6 +10,8 @@
     "node": "节点",
     "link": "关联",
     "event": "事件",
+    "bigcategory": "大类",
+    "smallcategory": "小类",
     "new event": "新增事件",
     "edit event": "编辑事件",
     "category": "分类",
@@ -21,6 +23,19 @@
     "event urgency": "紧急程度",
     "event smallcategory": "所属小类",
     "event bigcategory": "所属大类",
-    "event id": "序号"
+    "event id": "序号",
+    "new smallcategory": "新增小类",
+    "new bigcategory": "新增大类",
+    "category id": "编号",
+    "category name": "名称",
+    "category content": "内容",
+    "category belongTo": "所属大类",
+    "unit": "负责单位",
+    "department": "下属部门/科室",
+    "created_at": "创建时间",
+    "option": "操作",
+    "edit": "编辑",
+    "delete": "删除",
+    "confirm delete": "是否确认删除"
   }
 }

@@ -12,36 +12,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       type?: string;
     };
     const result = await session.run(`
-      MATCH (n:event)
-      RETURN n
-      ORDER BY n.created_at DESC`);
+      MATCH (n:smallcategory)
+      RETURN n`);
     jsonRes(res, {
       data: {
-        total: result.records.length,
         data: result.records.map((r: any) => {
           const {
-            identity,
-            properties: {
-              address,
-              category_big_sym,
-              issue,
-              category_small_sym,
-              created_at,
-              id,
-              urgency_sym,
-              status
-            }
+            properties: { id, name, unit, content, department, category_big_sym }
           } = r.get('n');
-
           return {
-            id: toNumber(identity),
-            address,
-            issue,
-            category_big_sym,
-            category_small_sym,
-            created_at: created_at.toStandardDate(),
-            urgency_sym,
-            status
+            id,
+            name,
+            unit,
+            content,
+            department,
+            category_big_sym
           };
         })
       }

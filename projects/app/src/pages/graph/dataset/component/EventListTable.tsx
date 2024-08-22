@@ -1,113 +1,158 @@
-// @ts-nocheck
-import React, { Ref, RefObject, useImperativeHandle, useState } from 'react';
+import React, { Ref, useState, useCallback, ReactNode, useEffect, useMemo } from 'react';
 import { useTranslation } from 'next-i18next';
-import dynamic from 'next/dynamic';
-import { useToast } from '@fastgpt/web/hooks/useToast';
-import { deleteNode, editNode, getNodes, newNode, getEvents } from '@/web/core/graph/api';
+import { getEvents, deleteEvent, getCategoriesMap } from '@/web/core/graph/api';
 import { useConfirm } from '@fastgpt/web/hooks/useConfirm';
-import { NodeTypeMap } from '..';
 import dayjs from 'dayjs';
-import { ProTable } from '@ant-design/pro-components';
+import { ProColumns, ProTable } from '@ant-design/pro-components';
+import { Badge, Button } from 'antd';
+import EventModal from './EventModal';
 
 type DataSourceType = {
-  id: string;
-  name: string;
-  type: string;
+  id: number;
+  address: string;
+  issue: string;
+  category_big_sym?: number;
+  category_small_sym?: number;
+  created_at: string;
+  urgency_sym: string;
+  status?: string;
 };
 
-const UrgencyMap = {
+const UrgencyMap: { [x: string]: { text: string; color: string } } = {
   yz: {
-    text: '严重'
+    text: '严重',
+    color: 'red'
   },
   jy: {
-    text: '紧急'
+    text: '紧急',
+    color: 'orange'
   },
   yb: {
-    text: '紧急'
+    text: '一般',
+    color: 'blue'
   },
   qd: {
-    text: '轻度'
+    text: '轻度',
+    color: 'lime'
   }
 };
 
 const EventListTable: React.FC<{
-  myRef: Ref;
-  editTableRow: (data: DataSourceType) => void;
-}> = ({ myRef, editTableRow }) => {
+  myRef: any;
+}> = ({ myRef }) => {
   const { t } = useTranslation();
-  const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
-  const [dataSource, setDataSource] = useState<readonly DataSourceType[]>();
-  const [indexCount, setIndexCount] = useState<number>(0);
+
+  const [isEventModalVisible, setIsEventModalVisible] = useState(false);
+  const [editEventData, setEditEventData] = useState<any>();
+  const [categoryData, setCategoryData] = useState<any>();
 
   const { openConfirm, ConfirmModal } = useConfirm({
-    content: '是否确认删除',
+    content: t('graph:dataset.confirm delete'),
     type: 'delete'
   });
 
-  const columns: ProColumns<DataSourceType>[] = [
-    {
-      title: t('graph:dataset.event id'),
-      dataIndex: 'id',
-      hideInSearch: true
-    },
-    {
-      title: t('graph:dataset.event issue'),
-      dataIndex: 'issue'
-    },
-    {
-      title: t('graph:dataset.event address'),
-      dataIndex: 'address',
-      hideInSearch: true
-    },
-    {
-      title: t('graph:dataset.event urgency'),
-      dataIndex: 'urgency_sym',
-      hideInSearch: true,
-      valueEnum: UrgencyMap
-    },
-    {
-      title: t('graph:dataset.event smallcategory'),
-      dataIndex: 'smallcategory',
-      hideInSearch: true
-    },
-    {
-      title: t('graph:dataset.event bigcategory'),
-      dataIndex: 'bigcategory',
-      hideInSearch: true
-    },
-    {
-      title: `创建时间`,
-      dataIndex: 'created_at',
-      hideInSearch: true,
-      render: (str) => dayjs(str).format('YYYY-MM-DD')
-    },
-    {
-      title: '操作',
-      valueType: 'option',
-      width: 200,
-      render: (text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            editTableRow(record);
-          }}
-        >
-          编辑
-        </a>,
-        <a
-          key="delete"
-          onClick={async () => {
-            openConfirm(async () => {
-              await deleteEvent({ id: record.id });
-              action?.reloadAndRest?.();
-            })();
-          }}
-        >
-          删除
-        </a>
-      ]
+  useEffect(() => {
+    async function fetchData() {
+      const { data } = await getCategoriesMap();
+      setCategoryData(data);
     }
-  ];
+    fetchData();
+  }, []);
+
+  const editTableEvent = useCallback((eventData: any) => {
+    setEditEventData(eventData);
+    setIsEventModalVisible(true);
+  }, []);
+
+  const columns: ProColumns<DataSourceType>[] = useMemo(
+    () => [
+      {
+        title: t('graph:dataset.event id'),
+        dataIndex: 'id',
+        hideInSearch: true
+      },
+      {
+        title: t('graph:dataset.event issue'),
+        dataIndex: 'issue'
+      },
+      {
+        title: t('graph:dataset.event address'),
+        dataIndex: 'address'
+      },
+      {
+        title: t('graph:dataset.event urgency'),
+        dataIndex: 'urgency_sym',
+        valueEnum: UrgencyMap,
+        render: (_, record: any) => (
+          <Badge
+            key={record.urgency_sym}
+            color={UrgencyMap[record.urgency_sym].color}
+            text={UrgencyMap[record.urgency_sym].text}
+          />
+        )
+      },
+      {
+        title: t('graph:dataset.event smallcategory'),
+        dataIndex: 'category_small_sym',
+        hideInSearch: true,
+        render: (_, record: any) => {
+          if (categoryData?.smallCategories) {
+            return categoryData?.smallCategories?.[record?.category_small_sym]?.name;
+          } else {
+            return '-';
+          }
+        }
+      },
+      {
+        title: t('graph:dataset.event bigcategory'),
+        dataIndex: 'bigcategory',
+        hideInSearch: true,
+        render: (_, record: any) => {
+          if (categoryData?.smallCategories && categoryData?.bigCategories) {
+            const smallCategory = categoryData?.smallCategories?.[record?.category_small_sym];
+            return categoryData?.bigCategories?.[smallCategory?.category_big_sym]?.name || '-';
+          } else {
+            return '-';
+          }
+        }
+      },
+      {
+        title: t('graph:dataset.created_at'),
+        dataIndex: 'created_at',
+        hideInSearch: true,
+        render: (_: ReactNode, record: DataSourceType) =>
+          dayjs(record.created_at).format('YYYY-MM-DD')
+      },
+      {
+        title: t('graph:dataset.option'),
+        valueType: 'option',
+        width: 200,
+        render: (_: any, record: any, ___: any, action: any) => [
+          <a
+            key="editable"
+            onClick={() => {
+              editTableEvent(record);
+            }}
+          >
+            {t('graph:dataset.edit')}
+          </a>,
+          <a
+            key="delete"
+            style={{ color: 'red' }}
+            onClick={async () => {
+              openConfirm(async () => {
+                await deleteEvent({ id: record.id });
+                action?.reloadAndRest?.();
+              })();
+            }}
+          >
+            {t('graph:dataset.delete')}
+          </a>
+        ]
+      }
+    ],
+    [categoryData, editTableEvent, openConfirm, t]
+  );
 
   return (
     <>
@@ -118,10 +163,22 @@ const EventListTable: React.FC<{
         className="myListTable"
         search={{ labelWidth: 'auto', span: 4, className: 'lightSearch' }}
         columns={columns}
-        toolBarRender={false}
-        request={async (params: any) => {
+        toolBarRender={() => [
+          <Button type="primary" key="primary" onClick={() => editTableEvent(null)}>
+            {t('graph:dataset.new event')}
+          </Button>
+        ]}
+        options={false}
+        request={async ({ current, pageSize, ...params }: any) => {
           const { data } = await getEvents();
-          const result = data.filter((item) => !!item);
+          const result = data.filter((item) => {
+            for (const key in params) {
+              if (item[key].indexOf(params[key]) < 0) {
+                return false;
+              }
+            }
+            return true;
+          });
           return {
             data: result,
             total: result.length,
@@ -130,6 +187,19 @@ const EventListTable: React.FC<{
         }}
         pagination={{
           pageSize: 10
+        }}
+      />
+      <EventModal
+        open={isEventModalVisible}
+        editData={editEventData}
+        onClose={() => {
+          setIsEventModalVisible(false);
+        }}
+        categoryData={categoryData}
+        urgencyMap={UrgencyMap}
+        onFinish={() => {
+          setIsEventModalVisible(false);
+          myRef?.current?.reload();
         }}
       />
       <ConfirmModal />

@@ -93,6 +93,10 @@ textarea::placeholder {
   padding: 10px 0;
 }
 
+.ant-pro-table .ant-pro-table-search.lightSearch {
+  margin-block-end: 0;
+}
+
 .lightSearch .ant-pro-query-filter-row .ant-col:last-child {
   text-align: start;
   margin-inline-start: 0;
@@ -100,4 +104,8 @@ textarea::placeholder {
 
 .myListTable .ant-table-wrapper .ant-table-thead > tr > th {
   background: var(--chakra-colors-myGray-100);
+}
+
+.myListTable .ant-pro-table-list-toolbar-container {
+  padding-block-start: 0;
 }

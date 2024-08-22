@@ -1,14 +1,13 @@
 import {
   ModalForm,
-  ProForm,
-  ProFormDateRangePicker,
   ProFormDependency,
   ProFormSelect,
   ProFormText
 } from '@ant-design/pro-components';
-import { Button, Form, message } from 'antd';
-import { useEffect, useMemo } from 'react';
-import { editNode, getNodes, newNode } from '@/web/core/graph/api';
+import { useTranslation } from 'next-i18next';
+import { Form, message } from 'antd';
+import { useEffect } from 'react';
+import { editNode, newNode } from '@/web/core/graph/api';
 import { NodeTypeMap } from '../index';
 
 const transToValueEnum = (data: any) => {
@@ -26,25 +25,30 @@ const eventStatusMap = {
 };
 
 const EventModal = ({
-  onFinish,
   open,
-  editNodeData,
-  onClose
+  urgencyMap,
+  categoryData,
+  editData,
+  onClose,
+  onFinish
 }: {
   onFinish: any;
+  urgencyMap: any;
+  categoryData: any;
   open: boolean;
-  editNodeData?: any;
+  editData?: any;
   onClose: any;
 }) => {
+  const { t } = useTranslation();
+
   const [form] = Form.useForm<{ name: string; company: string }>();
 
   useEffect(() => {
-    if (editNodeData) {
-      form.setFieldsValue(editNodeData || {});
-    } else {
-      form.resetFields();
+    form.resetFields();
+    if (editData) {
+      form.setFieldsValue(editData || {});
     }
-  }, [editNodeData, form]);
+  }, [editData, form]);
 
   return (
     open && (
@@ -53,7 +57,7 @@ const EventModal = ({
         company: string;
       }>
         open={open}
-        title={editNodeData?.id ? '编辑节点' : '新建节点'}
+        title={editData?.id ? t('graph:dataset.edit event') : t('graph:dataset.new event')}
         form={form}
         autoFocusFirstInput
         modalProps={{
@@ -63,15 +67,17 @@ const EventModal = ({
         width={400}
         onFinish={async (values: any) => {
           try {
-            if (editNodeData?.id) {
-              await editNode({
-                ...editNodeData,
-                ...values,
-                ...(editNodeData?.name === values.name ? {} : { oldName: editNodeData?.name })
-              });
-            } else {
-              await newNode(values);
-            }
+            console.log('values', values);
+
+            // if (editData?.id) {
+            //   await editNode({
+            //     ...editData,
+            //     ...values,
+            //     ...(editData?.name === values.name ? {} : { oldName: editData?.name })
+            //   });
+            // } else {
+            //   await newNode(values);
+            // }
             message.success('提交成功');
             onFinish();
             return true;
@@ -81,36 +87,28 @@ const EventModal = ({
           }
         }}
       >
-        <ProFormSelect
-          name="type"
-          label="节点类型"
-          disabled={!!editNodeData?.id}
+        <ProFormText
+          name="issue"
+          label={t('graph:dataset.event issue')}
           rules={[{ required: true }]}
-          valueEnum={transToValueEnum(NodeTypeMap)}
         />
-        <ProFormText name="name" label="节点名称" rules={[{ required: true }]} />
-        <ProFormDependency name={['type']}>
-          {({ type }) => {
-            switch (type) {
-              case NodeTypeMap.smallcategory.value:
-                return <ProFormText name="content" rules={[{ required: true }]} label="内容" />;
-              case NodeTypeMap.event.value:
-                return (
-                  <>
-                    <ProFormText name="address" label="地址" />
-                    <ProFormSelect
-                      name="status"
-                      label="事件状态"
-                      rules={[{ required: true }]}
-                      valueEnum={eventStatusMap}
-                    />
-                  </>
-                );
-              default:
-                break;
-            }
-          }}
-        </ProFormDependency>
+        <ProFormText
+          name="address"
+          label={t('graph:dataset.event address')}
+          rules={[{ required: true }]}
+        />
+        <ProFormSelect
+          name="urgency_sym"
+          label={t('graph:dataset.event urgency')}
+          rules={[{ required: true }]}
+          valueEnum={urgencyMap}
+        />
+        <ProFormSelect
+          name="urgency_sym"
+          label={t('graph:dataset.event urgency')}
+          rules={[{ required: true }]}
+          valueEnum={urgencyMap}
+        />
       </ModalForm>
     )
   );

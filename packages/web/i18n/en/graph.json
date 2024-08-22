@@ -10,6 +10,8 @@
     "node": "Nodes",
     "link": "Links",
     "event": "Event",
+    "bigcategory": "Big Category",
+    "smallcategory": "Small Category",
     "new event": "New Event",
     "edit event": "Edit Event",
     "category": "Category",
@@ -20,6 +22,19 @@
     "event urgency": "Urgency",
     "event smallcategory": "Small Category",
     "event bigcategory": "Big Category",
-    "event id": "ID"
+    "event id": "ID",
+    "new smallcategory": "New Smallcategory",
+    "new bigcategory": "New Bigcategory",
+    "category id": "ID",
+    "category name": "Name",
+    "category content": "Content",
+    "category belongTo": "Belong To",
+    "unit": "Unit",
+    "department": "Department",
+    "created_at": "CreateTime",
+    "option": "Options",
+    "edit": "edit",
+    "delete": "delete",
+    "confirm delete": "Confirm To Delete"
   }
 }

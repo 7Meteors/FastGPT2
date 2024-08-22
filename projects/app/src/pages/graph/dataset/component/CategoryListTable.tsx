@@ -1,175 +1,185 @@
-// @ts-nocheck
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'next-i18next';
-import dynamic from 'next/dynamic';
-import { useToast } from '@fastgpt/web/hooks/useToast';
-import { deleteNode, editNode, getLinks, newNode } from '@/web/core/graph/api';
+import {
+  deleteEvent,
+  getCategoriesMap,
+  bigcategoryList,
+  smallcategoryList
+} from '@/web/core/graph/api';
 import { useConfirm } from '@fastgpt/web/hooks/useConfirm';
-import { NodeTypeMap } from '../index';
-
-const ProTable = dynamic(
-  (): any => import('@ant-design/pro-components').then((item) => item.ProTable),
-  {
-    ssr: false
-  }
-);
+import { ProColumns, ProTable } from '@ant-design/pro-components';
+import { Button } from 'antd';
+import { DatasetTypeEnum } from '..';
+import CategoryModal from './CategoryModal';
 
 type DataSourceType = {
-  id: string;
-  name: string;
-  type: string;
+  id: number;
+  address: string;
+  issue: string;
+  category_big_sym?: number;
+  category_small_sym?: number;
+  created_at: string;
+  urgency_sym: string;
+  status?: string;
 };
 
-const LinkListTable: React.FC = ({ myRef }) => {
-  const { toast } = useToast();
-
+const CategoryListTable: React.FC<{
+  myRef: any;
+  appType: DatasetTypeEnum;
+}> = ({ myRef, appType }) => {
   const { t } = useTranslation();
-  const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
-  const [dataSource, setDataSource] = useState<readonly DataSourceType[]>();
-  const [indexCount, setIndexCount] = useState<number>(0);
+
+  const [isEventModalVisible, setIsEventModalVisible] = useState(false);
+  const [editEventData, setEditEventData] = useState<any>();
+  const [categoryData, setCategoryData] = useState<any>();
+
   const { openConfirm, ConfirmModal } = useConfirm({
     content: '是否确认删除',
     type: 'delete'
   });
 
-  const columns: ProColumns<DataSourceType>[] = [
-    {
-      title: `ID`,
-      dataIndex: 'id',
-      tooltip: '唯一标识',
-      readonly: true,
-      width: '15%',
-      hideInForm: true,
-      hideInTable: true,
-      hideInSearch: true
-    },
-    {
-      title: `起始节点类型`,
-      dataIndex: 'sourceType',
-      render: (_, record) => {
-        return NodeTypeMap[record.r.type]?.label;
-      }
-    },
-    {
-      title: `起始节点名称`,
-      dataIndex: 'sourceName',
-      render: (_, record) => {
-        return record.a?.properties?.name;
-      }
-    },
-    {
-      title: `目标节点类型`,
-      dataIndex: 'targetType',
-      render: (_, record) => {
-        return NodeTypeMap[record.r.type]?.label;
-      }
-    },
-    {
-      title: `目标节点名称`,
-      dataIndex: 'targetName',
-      render: (_, record) => {
-        return record.b?.properties?.name;
-      }
-    },
-    {
-      title: '操作',
-      valueType: 'option',
-      width: 200,
-      render: (text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(record.id);
-          }}
-        >
-          编辑
-        </a>,
-        <a
-          key="delete"
-          onClick={async () => {
-            openConfirm(async () => {
-              await deleteNode({ name: record.name, type: record.type });
-              action?.reloadAndRest?.();
-            })();
-          }}
-        >
-          删除
-        </a>
-      ]
+  useEffect(() => {
+    async function fetchData() {
+      const { data } = await getCategoriesMap();
+      setCategoryData(data);
     }
-  ];
+    fetchData();
+  }, []);
+
+  const editTableEvent = useCallback((eventData: any) => {
+    setEditEventData(eventData);
+    setIsEventModalVisible(true);
+  }, []);
+
+  const columns: ProColumns<DataSourceType>[] = useMemo(
+    () => [
+      {
+        title: t('graph:dataset.category id'),
+        dataIndex: 'id'
+      },
+      {
+        title: t('graph:dataset.category name'),
+        dataIndex: 'name'
+      },
+      ...(appType === DatasetTypeEnum.smallcategory
+        ? [
+            {
+              title: t('graph:dataset.category content'),
+              dataIndex: 'content',
+              hideInSearch: true
+            },
+            {
+              title: t('graph:dataset.unit'),
+              dataIndex: 'unit',
+              hideInSearch: true
+            },
+            {
+              title: t('graph:dataset.department'),
+              dataIndex: 'department',
+              hideInSearch: true
+            },
+            {
+              title: t('graph:dataset.category belongTo'),
+              dataIndex: 'category_big_sym',
+              hideInSearch: true,
+              render: (_: any, record: any) => {
+                if (categoryData?.smallCategories) {
+                  return categoryData?.smallCategories?.[record?.category_small_sym]?.name;
+                } else {
+                  return '-';
+                }
+              }
+            }
+          ]
+        : []),
+      {
+        title: t('graph:dataset.option'),
+        valueType: 'option',
+        width: 200,
+        render: (_: any, record: any, ___: any, action: any) => [
+          <a
+            key="editable"
+            onClick={() => {
+              editTableEvent(record);
+            }}
+          >
+            {t('graph:dataset.edit')}
+          </a>,
+          <a
+            key="delete"
+            style={{ color: 'red' }}
+            onClick={async () => {
+              openConfirm(async () => {
+                await deleteEvent({ id: record.id });
+                action?.reloadAndRest?.();
+              })();
+            }}
+          >
+            {t('graph:dataset.delete')}
+          </a>
+        ]
+      }
+    ],
+    [appType, categoryData?.smallCategories, editTableEvent, openConfirm, t]
+  );
 
   return (
     <>
       <ProTable
         rowKey="id"
-        actionRef={myRef}
         headerTitle=""
-        recordCreatorProps={{
-          position: 'top',
-          record: () => ({ id: (Math.random() * 1000000).toFixed(0) })
-        }}
-        // search={{ labelWidth: 'auto', span: 4, className: 'lightSearch' }}
-        search={false}
-        className="nodeListTable"
-        loading={false}
+        actionRef={myRef}
+        className="myListTable"
+        search={{ labelWidth: 'auto', span: 4, className: 'lightSearch' }}
         columns={columns}
-        toolBarRender={false}
-        request={async (params: any) => {
-          const { data } = await getLinks(params);
+        toolBarRender={() => [
+          <Button type="primary" key="primary" onClick={() => editTableEvent(null)}>
+            {t(
+              appType === DatasetTypeEnum.smallcategory
+                ? 'graph:dataset.new smallcategory'
+                : 'graph:dataset.new bigcategory'
+            )}
+          </Button>
+        ]}
+        options={false}
+        request={async ({ current, pageSize, ...params }: any) => {
+          const { data } = await (appType === DatasetTypeEnum.smallcategory
+            ? smallcategoryList()
+            : bigcategoryList());
+          const result = data.filter((item) => {
+            for (const key in params) {
+              if (item[key].indexOf(params[key]) < 0) {
+                return false;
+              }
+            }
+            return true;
+          });
           return {
-            data: data,
-            total: data.length,
+            data: result,
+            total: result.length,
             success: true
           };
         }}
         pagination={{
           pageSize: 10
         }}
-        value={dataSource}
-        editable={{
-          type: 'multiple',
-          editableKeys,
-          onChange: setEditableRowKeys,
-          onSave: async (_: any, record: any, originObj: any, newLineConfig: any) => {
-            console.log('newLineConfig', newLineConfig);
-            try {
-              if (newLineConfig) {
-                await newNode({
-                  name: record.name,
-                  type: record.type
-                });
-              } else {
-                if (record.name === originObj.name && record.type === originObj.type) {
-                  return;
-                }
-                await editNode({
-                  name: record.name as string,
-                  type: record.type,
-                  ...(originObj.type === record.type ? {} : { oldType: originObj.type }),
-                  id: record.id
-                });
-              }
-              toast({
-                status: 'success',
-                title: `${newLineConfig ? '新建' : '编辑'}节点成功`
-              });
-            } catch (error: Error) {
-              toast({
-                status: 'error',
-                title: error.message
-              });
-            } finally {
-              const { data } = await getLinks();
-              setDataSource(data as any);
-            }
-          }
+      />
+      <CategoryModal
+        open={isEventModalVisible}
+        editData={editEventData}
+        onClose={() => {
+          setIsEventModalVisible(false);
+        }}
+        isSmallcategory={appType === DatasetTypeEnum.smallcategory}
+        categoryData={categoryData}
+        onFinish={() => {
+          setIsEventModalVisible(false);
+          myRef.current?.reload();
         }}
       />
       <ConfirmModal />
     </>
-    // @ts-ignore
   );
 };
 
-export default LinkListTable;
+export default CategoryListTable;
