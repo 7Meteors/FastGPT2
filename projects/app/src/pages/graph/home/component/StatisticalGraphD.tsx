@@ -10,24 +10,14 @@ import { queryEventPieSummary } from '@/web/core/graph/api';
 
 echarts.use([TitleComponent, TooltipComponent, LegendComponent, GraphChart, CanvasRenderer]);
 
-const data = [
-  { name: '消费者权益', value: 148 },
-  { name: '环境保护', value: 321 },
-  { name: '公共服务', value: 235 },
-  { name: '交通管理', value: 478 },
-  { name: '城市规划', value: 89 }
-];
-
 const StatisticalGraphD: React.FC = () => {
   const [loading, setLoading] = React.useState(true);
-  const [pageData, setPageData] = React.useState(
-    {} as { total: number; caseClosed: number; caseRefused: number; caseToBeFiled: number }
-  );
+  const [pageData, setPageData] = React.useState<any[]>([]);
 
   useEffect(() => {
     async function fetchData() {
       await queryEventPieSummary().then((res: any) => {
-        setPageData(res?.data || {});
+        setPageData(res?.data || []);
         setLoading(false);
       });
     }
@@ -50,13 +40,12 @@ const StatisticalGraphD: React.FC = () => {
       },
       series: [
         {
-          name: 'Access From',
           type: 'pie',
           radius: ['40%', '70%'],
           center: ['50%', '50%'],
           startAngle: 180,
           endAngle: 360,
-          data: pageData
+          data: pageData || []
         }
       ]
     };

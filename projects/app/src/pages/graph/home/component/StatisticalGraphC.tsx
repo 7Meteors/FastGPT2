@@ -3,16 +3,16 @@ import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/compo
 import { GraphChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
 import ReactECharts from 'echarts-for-react';
-import React, { useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { queryEventTimeline } from '@/web/core/graph/api';
 
 echarts.use([TitleComponent, TooltipComponent, LegendComponent, GraphChart, CanvasRenderer]);
 
 const StatisticalGraphC: React.FC = () => {
-  const [loading, setLoading] = React.useState(true);
-  const [pageData, setPageData] = React.useState([] as any[]);
-  const [average, setAverage] = React.useState(0);
+  const [loading, setLoading] = useState(true);
+  const [pageData, setPageData] = useState([] as any[]);
+  const [average, setAverage] = useState(0);
 
   useEffect(() => {
     async function fetchData() {

@@ -68,7 +68,8 @@ const CategoryListTable: React.FC<{
             {
               title: t('graph:dataset.category content'),
               dataIndex: 'content',
-              hideInSearch: true
+              hideInSearch: true,
+              ellipsis: true
             },
             {
               title: t('graph:dataset.unit'),
@@ -97,7 +98,7 @@ const CategoryListTable: React.FC<{
       {
         title: t('graph:dataset.option'),
         valueType: 'option',
-        width: 200,
+        width: 100,
         render: (_: any, record: any, ___: any, action: any) => [
           <a
             key="editable"

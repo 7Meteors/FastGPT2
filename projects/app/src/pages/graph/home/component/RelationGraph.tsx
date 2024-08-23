@@ -26,14 +26,16 @@ const categoriesMap: { [k: string]: any } = {
 const graph = {};
 
 const RelationGraph: React.FC = () => {
+  const [loading, setLoading] = useState(true);
   const [nodes, setNodes] = useState<any[]>([]);
   const [links, setLinks] = useState<any[]>([]);
   const chartRef = useRef(null);
 
   useEffect(() => {
-    getNodes().then((res) => {
+    async function fetchData() {
+      const [resNodes, resLinks] = await Promise.all([getNodes(), getLinks()]);
       setNodes(
-        res.data.map(function (item) {
+        resNodes.data.map(function (item) {
           return {
             id: item.id,
             name: item.name,
@@ -41,14 +43,14 @@ const RelationGraph: React.FC = () => {
           };
         })
       );
-    });
-    getLinks().then((res) => {
-      setLinks(res.data);
-    });
+      setLinks(resLinks.data);
+      setLoading(false);
+    }
+    fetchData();
   }, []);
 
   useEffect(() => {
-    if (chartRef.current && chartRef.current.getEchartsInstance()) {
+    if (chartRef?.current && chartRef?.current?.getEchartsInstance()) {
       // 获取ECharts实例
       const myChart = chartRef.current.getEchartsInstance();
 
@@ -150,6 +152,7 @@ const RelationGraph: React.FC = () => {
       echarts={echarts}
       option={options}
       ref={chartRef}
+      showLoading={loading}
       // notMerge={true}
       // lazyUpdate={true}
       // theme={'theme_name'}

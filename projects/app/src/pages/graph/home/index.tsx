@@ -65,7 +65,7 @@ const Dataset = () => {
             <BlockWrapper>
               <StatisticalGraphD />
             </BlockWrapper>
-            <GridItem colSpan={4}>
+            <GridItem colSpan={3}>
               <BlockWrapper>
                 <RelationGraph />
               </BlockWrapper>

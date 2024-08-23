@@ -126,7 +126,7 @@ const EventListTable: React.FC<{
       {
         title: t('graph:dataset.option'),
         valueType: 'option',
-        width: 200,
+        width: 100,
         render: (_: any, record: any, ___: any, action: any) => [
           <a
             key="editable"
@@ -161,7 +161,7 @@ const EventListTable: React.FC<{
         headerTitle=""
         actionRef={myRef}
         className="myListTable"
-        search={{ labelWidth: 'auto', span: 4, className: 'lightSearch' }}
+        search={{ labelWidth: 'auto', className: 'lightSearch', span: 4 }}
         columns={columns}
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => editTableEvent(null)}>

@@ -102,6 +102,11 @@ textarea::placeholder {
   margin-inline-start: 0;
 }
 
+.lightSearch .ant-col.ant-pro-query-filter-row-split {
+  flex: 0 0 25%;
+  min-width: 200px;
+}
+
 .myListTable .ant-table-wrapper .ant-table-thead > tr > th {
   background: var(--chakra-colors-myGray-100);
 }
