@@ -18,13 +18,13 @@ type DataSourceType = {
   status?: string;
 };
 
-const UrgencyMap: { [x: string]: { text: string; color: string } } = {
-  yz: {
-    text: '严重',
-    color: 'red'
-  },
+export const UrgencyMap: { [x: string]: { text: string; color: string } } = {
   jy: {
     text: '紧急',
+    color: 'red'
+  },
+  yz: {
+    text: '严重',
     color: 'orange'
   },
   yb: {

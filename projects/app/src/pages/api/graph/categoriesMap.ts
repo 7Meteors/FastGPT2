@@ -37,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const smallCategoriesMap = {};
     smallCategories.records.forEach((r: any) => {
       const {
-        properties: { id, name, content, unit, department }
+        properties: { id, name, content, unit, department, category_big_sym }
       } = r.get('n');
       smallCategoriesMap[id] = {
         id,
@@ -45,7 +45,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         text: name,
         content,
         unit,
-        department
+        department,
+        category_big_sym
       };
     });
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as echarts from 'echarts/core';
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
 import { GraphChart } from 'echarts/charts';
@@ -17,19 +16,20 @@ import {
 } from '@chakra-ui/react';
 import { queryEventSummary } from '@/web/core/graph/api';
 import { Spin } from 'antd';
+import { UrgencyMap } from '../../dataset/component/EventListTable';
 
 echarts.use([TitleComponent, TooltipComponent, LegendComponent, GraphChart, CanvasRenderer]);
 
 const StatisticalGraphA: React.FC = () => {
   const [loading, setLoading] = React.useState(true);
   const [pageData, setPageData] = React.useState(
-    {} as { total: number; caseClosed: number; caseRefused: number; caseToBeFiled: number }
+    {} as { total: number; urgency: { [x: string]: number }; lastMonth: number }
   );
 
   useEffect(() => {
     async function fetchData() {
-      await queryEventSummary().then((res) => {
-        setPageData(res.data);
+      await queryEventSummary().then((res: any) => {
+        setPageData(res?.data);
         setLoading(false);
       });
     }
@@ -47,34 +47,30 @@ const StatisticalGraphA: React.FC = () => {
         </Text>
         <Flex grow={1} alignItems="center" height={102}>
           <StatGroup style={{ flex: 1, justifyContent: 'start' }}>
-            <Stat style={{ flex: '0 0 30%' }}>
-              <StatLabel>待立案</StatLabel>
-              <StatNumber>{pageData?.caseToBeFiled || 0}</StatNumber>
-              {/* <StatHelpText>
-                <StatArrow type="increase" />
-                {Number((100 * 1122) / 1560).toFixed(2)}%
-              </StatHelpText> */}
+            <Stat style={{ flex: '0 0 25%' }}>
+              <StatLabel>紧急</StatLabel>
+              <StatNumber style={{ color: UrgencyMap.jy.color }}>
+                {pageData?.urgency?.jy || 0}
+              </StatNumber>
             </Stat>
-            <Stat style={{ flex: '0 0 30%' }}>
-              <StatLabel>不立案</StatLabel>
-              <StatNumber>{pageData?.caseRefused || 0}</StatNumber>
-              {/* <StatHelpText>
-                <StatArrow type="decrease" />
-                {Number((100 * 438) / 1560).toFixed(2)}%
-              </StatHelpText> */}
+            <Stat style={{ flex: '0 0 25%' }}>
+              <StatLabel>严重</StatLabel>
+              <StatNumber style={{ color: UrgencyMap.yz.color }}>
+                {pageData?.urgency?.yz || 0}
+              </StatNumber>
             </Stat>
-            <Stat style={{ flex: '0 0 30%' }}>
-              <StatLabel>结案</StatLabel>
-              <StatNumber>{pageData?.caseClosed || 0}</StatNumber>
-              {/* <StatHelpText>
-                <StatArrow type="decrease" />
-                {Number((100 * 438) / 1560).toFixed(2)}%
-              </StatHelpText> */}
+            <Stat style={{ flex: '0 0 25%' }}>
+              <StatLabel>一般</StatLabel>
+              <StatNumber>{pageData?.urgency?.yb || 0}</StatNumber>
+            </Stat>
+            <Stat style={{ flex: '0 0 25%' }}>
+              <StatLabel>轻度</StatLabel>
+              <StatNumber>{pageData?.urgency?.qd || 0}</StatNumber>
             </Stat>
           </StatGroup>
         </Flex>
         <hr />
-        <Box mt="2">上月新增 423</Box>
+        <Box mt="2">上月新增 {pageData?.lastMonth || 0}</Box>
       </Flex>
     </Spin>
   );

@@ -6,24 +6,20 @@ import { toNumber } from 'neo4j-driver-core/lib/integer.js';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   const session = driver.session();
-
   try {
     const result = await session.run(`
-      MATCH (a)-[r]->(b) 
-      RETURN a, r, b`);
-    console.log(result);
+      MATCH (n)
+      RETURN n`);
     jsonRes(res, {
       data: {
-        data: result.records.map((item: any) => {
-          const a = item.get('a');
-          const r = item.get('r');
-          const b = item.get('b');
+        total: result.records.length,
+        data: result.records.map((r: { get: (arg0: string) => any }) => {
+          const node = r.get('n');
           return {
-            source:
-              r?.type === 'BELONGS_TO'
-                ? `${a.labels[0]}-${a.properties?.id}`
-                : `${a.labels[0]}-${toNumber(a.identity)}`,
-            target: `${b.labels[0]}-${b.properties?.id}`
+            ...node.properties,
+            name: node.properties?.name || node.properties?.issue,
+            type: node.labels[0],
+            id: `${node.labels[0]}-${node.labels[0] === 'event' ? toNumber(node.identity) : node?.properties?.id}`
           };
         })
       }

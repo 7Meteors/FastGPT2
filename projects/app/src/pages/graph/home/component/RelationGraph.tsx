@@ -43,12 +43,7 @@ const RelationGraph: React.FC = () => {
       );
     });
     getLinks().then((res) => {
-      setLinks(
-        res.data.map((item: { r: { startNodeElementId: string; endNodeElementId: string } }) => ({
-          source: item.r.startNodeElementId,
-          target: item.r.endNodeElementId
-        }))
-      );
+      setLinks(res.data);
     });
   }, []);
 

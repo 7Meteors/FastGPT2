@@ -7,7 +7,7 @@ import {
 import { useTranslation } from 'next-i18next';
 import { Form, message } from 'antd';
 import { useEffect } from 'react';
-import { editNode, newNode } from '@/web/core/graph/api';
+import { editEvent, editNode, newEvent } from '@/web/core/graph/api';
 import { NodeTypeMap } from '../index';
 
 const transToValueEnum = (data: any) => {
@@ -16,12 +16,6 @@ const transToValueEnum = (data: any) => {
     result[key] = data[key].label;
   }
   return result;
-};
-
-const eventStatusMap = {
-  caseClosed: '结案',
-  caseRefused: '不立案',
-  caseToBeFiled: '待立案'
 };
 
 const EventModal = ({
@@ -48,7 +42,7 @@ const EventModal = ({
     if (editData) {
       form.setFieldsValue(editData || {});
     }
-  }, [editData, form]);
+  }, [editData, form, open]);
 
   return (
     open && (
@@ -69,15 +63,15 @@ const EventModal = ({
           try {
             console.log('values', values);
 
-            // if (editData?.id) {
-            //   await editNode({
-            //     ...editData,
-            //     ...values,
-            //     ...(editData?.name === values.name ? {} : { oldName: editData?.name })
-            //   });
-            // } else {
-            //   await newNode(values);
-            // }
+            if (editData?.id) {
+              await editEvent({
+                ...editData,
+                ...values,
+                old_category_small_sym: editData?.category_small_sym
+              });
+            } else {
+              await newEvent(values);
+            }
             message.success('提交成功');
             onFinish();
             return true;
@@ -104,11 +98,25 @@ const EventModal = ({
           valueEnum={urgencyMap}
         />
         <ProFormSelect
-          name="urgency_sym"
-          label={t('graph:dataset.event urgency')}
-          rules={[{ required: true }]}
-          valueEnum={urgencyMap}
+          name="category_small_sym"
+          label={t('graph:dataset.event smallcategory')}
+          valueEnum={categoryData.smallCategories}
         />
+        {/* <ProFormDependency name={['category_small_sym']}>
+          {({ category_small_sym }) => {
+            return (
+              category_small_sym && (
+                <ProFormSelect
+                  name="category_big_sym"
+                  label={t('graph:dataset.event bigcategory')}
+                  disabled
+                  value={}
+                  valueEnum={categoryData.bigCategories}
+                />
+              )
+            );
+          }}
+        </ProFormDependency> */}
       </ModalForm>
     )
   );

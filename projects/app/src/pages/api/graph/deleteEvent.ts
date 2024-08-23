@@ -10,23 +10,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       id: string;
     };
 
-    const relatedNode = await session.run(
-      `MATCH (n:event {category_small_sym: $id})
-      RETURN n`,
-      { id }
-    );
-    if (relatedNode.records.length) {
-      jsonRes(res, {
-        code: 501,
-        error: '被事件关联，无法删除'
-      });
-      return;
-    }
-
     await session.run(
-      `MATCH (n:smallcategory  {id: $id})
-       DELETE n`,
-      { id }
+      `MATCH (ev:event) WHERE id(ev)= $id
+       MATCH (ev)-[oldRel:ASSOCIATED_TO]->(small:smallcategory)
+		   DELETE oldRel
+       WITH ev
+       DELETE ev`,
+      { id: Number(id) }
     );
 
     jsonRes(res);

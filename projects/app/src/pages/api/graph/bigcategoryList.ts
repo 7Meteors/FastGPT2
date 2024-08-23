@@ -2,7 +2,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { jsonRes } from '@fastgpt/service/common/response';
 import { driver } from '@fastgpt/service/common/neo4j/index';
-import { toNumber } from 'neo4j-driver-core/lib/integer.js';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   const session = driver.session();

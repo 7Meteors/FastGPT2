@@ -8,8 +8,8 @@ type POSTNewNodeBody = {
   type: string;
 };
 
-export const getNodes = (params?: { name?: string; type?: string }) =>
-  GET<{ data: any[] }>(`/graph/nodesList`, params);
+export const getNodes = () => GET<{ data: any[] }>(`/graph/nodesList`);
+export const getLinks = () => GET<{ data: any[] }>(`/graph/linksList`);
 
 export const getEvents = () => GET<{ data: any[] }>(`/graph/eventsList`);
 export const bigcategoryList = () => GET<{ data: any[] }>(`/graph/bigcategoryList`);
@@ -19,10 +19,8 @@ export const getCategoriesMap = () => GET<{ data: any[] }>(`/graph/categoriesMap
 export const queryEventSummary = () => GET(`/graph/queryEventSummary`);
 export const queryNodeSummary = () => GET(`/graph/queryNodeSummary`);
 
-export const getLinks = (params?: any) => GET<{ data: any[] }>(`/graph/linksList`, params);
-
-export const newNode = (data: POSTNewNodeBody) =>
-  POST<DatasetListItemType[]>(`/graph/newNode`, data);
+export const newEvent = (data: any) => POST(`/graph/newEvent`, data);
+export const editEvent = (data: any) => POST(`/graph/editEvent`, data);
 
 export const newBigcategory = (data: any) => POST(`/graph/newBigcategory`, data);
 export const newSmallcategory = (data: any) => POST(`/graph/newSmallcategory`, data);
@@ -35,6 +33,7 @@ export const editNode = (data: POSTNewNodeBody) =>
 export const deleteSmallcategory = (data: { id: string }) =>
   DELETE(`/graph/deleteSmallcategory`, data);
 export const deleteBigcategory = (data: { id: string }) => DELETE(`/graph/deleteBigcategory`, data);
+export const deleteEvent = (data: { id: string }) => DELETE(`/graph/deleteEvent`, data);
 
 export const newLink = (data: any) => POST<DatasetListItemType[]>(`/graph/newLink`, data);
 
