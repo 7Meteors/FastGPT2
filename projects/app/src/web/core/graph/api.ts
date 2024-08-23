@@ -18,7 +18,7 @@ export const getCategoriesMap = () => GET<{ data: any[] }>(`/graph/categoriesMap
 
 export const queryEventSummary = () => GET(`/graph/queryEventSummary`);
 export const queryEventTimeline = () => GET(`/graph/queryEventTimeline`);
-export const queryNodeSummary = () => GET(`/graph/queryNodeSummary`);
+export const queryEventPieSummary = () => GET(`/graph/queryEventPieSummary`);
 
 export const newEvent = (data: any) => POST(`/graph/newEvent`, data);
 export const editEvent = (data: any) => POST(`/graph/editEvent`, data);

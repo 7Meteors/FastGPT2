@@ -6,7 +6,7 @@ import { CanvasRenderer } from 'echarts/renderers';
 import ReactECharts from 'echarts-for-react';
 import React, { useEffect, useMemo } from 'react';
 import { Box, Flex, Text } from '@chakra-ui/react';
-import { queryNodeSummary } from '@/web/core/graph/api';
+import { queryEventPieSummary } from '@/web/core/graph/api';
 
 echarts.use([TitleComponent, TooltipComponent, LegendComponent, GraphChart, CanvasRenderer]);
 
@@ -26,7 +26,7 @@ const StatisticalGraphD: React.FC = () => {
 
   useEffect(() => {
     async function fetchData() {
-      await queryNodeSummary().then((res: any) => {
+      await queryEventPieSummary().then((res: any) => {
         setPageData(res?.data || {});
         setLoading(false);
       });
@@ -56,11 +56,11 @@ const StatisticalGraphD: React.FC = () => {
           center: ['50%', '50%'],
           startAngle: 180,
           endAngle: 360,
-          data
+          data: pageData
         }
       ]
     };
-  }, []);
+  }, [pageData]);
 
   return (
     <Flex grow={1} flexDirection="column" justifyContent="space-between">
@@ -73,6 +73,7 @@ const StatisticalGraphD: React.FC = () => {
         notMerge={true}
         lazyUpdate={true}
         theme={'theme_name'}
+        showLoading={loading}
         style={{ height: 180 }}
       />
     </Flex>
