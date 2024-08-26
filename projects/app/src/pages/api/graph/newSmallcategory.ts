@@ -55,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     if (category_big_sym) {
       await session.run(
-        `MATCH (small:smallcategory {id: $id}), (big:bigcategory {id:$category_big_sym })
+        `MATCH (small:smallcategory {id: $id}), (big:bigcategory {id: $category_big_sym })
 		     MERGE (small)-[:BELONGS_TO]->(big)`,
         { id, name, content, unit, department, category_big_sym }
       );

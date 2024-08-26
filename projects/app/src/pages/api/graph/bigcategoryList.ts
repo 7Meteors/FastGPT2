@@ -6,10 +6,6 @@ import { driver } from '@fastgpt/service/common/neo4j/index';
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   const session = driver.session();
   try {
-    const { name, type } = req.query as {
-      name?: string;
-      type?: string;
-    };
     const result = await session.run(`
       MATCH (n:bigcategory)
       RETURN n`);

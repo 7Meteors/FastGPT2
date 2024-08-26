@@ -23,6 +23,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       return;
     }
 
+    const relation = await session.run(
+      `MATCH (n:event)-[r:ASSOCIATED_TO]-(m:smallcategory {id: $id})
+        RETURN r`,
+      { id }
+    );
+    if (relation.records.length) {
+      jsonRes(res, {
+        code: 501,
+        error: '被事件关联，无法删除'
+      });
+      return;
+    }
+
+    await session.run(
+      `MATCH (n:smallcategory {id: $id})-[r:BELONGS_TO]-(m:bigcategory)
+       DELETE r`,
+      { id }
+    );
+
     await session.run(
       `MATCH (n:smallcategory  {id: $id})
        DELETE n`,

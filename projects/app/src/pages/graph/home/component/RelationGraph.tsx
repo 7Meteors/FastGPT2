@@ -19,7 +19,6 @@ const categoriesMap: { [k: string]: any } = {
   },
   event: {
     category: 2
-    // symbolSize: [30, 25],
   }
 };
 
@@ -126,6 +125,7 @@ const RelationGraph: React.FC = () => {
           //   layoutAnimation: false
           // },
           roam: true,
+          zoom: 2.5,
           layout: 'force',
           data: nodes,
           links: links,

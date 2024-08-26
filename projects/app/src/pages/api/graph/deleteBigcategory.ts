@@ -11,8 +11,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     };
 
     const relatedNode = await session.run(
-      `MATCH (n:smallcategory {category_big_sym: $id})
-      RETURN n`,
+      `MATCH (n:smallcategory)-[r:BELONGS_TO]-(m:bigcategory {id: $id})
+       RETURN r`,
       { id }
     );
     if (relatedNode.records.length) {

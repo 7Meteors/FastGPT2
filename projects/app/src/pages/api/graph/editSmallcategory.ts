@@ -41,6 +41,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       }
     }
 
+    if (old_category_big_sym && old_category_big_sym !== category_big_sym) {
+      await session.run(
+        `MATCH (small:smallcategory {id: $id})-[oldRel:BELONGS_TO]-(m:bigcategory)
+         DELETE oldRel`,
+        { id, old_category_big_sym }
+      );
+    }
+
     const toUpdateKeys = Object.keys(req.body).filter(
       (key) => key !== 'id' && key !== 'oldName' && key !== 'old_category_big_sym'
     );
@@ -51,11 +59,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       { name, id, oldName, content, unit, department, category_big_sym, old_category_big_sym }
     );
 
-    if (old_category_big_sym) {
+    if (category_big_sym && old_category_big_sym !== category_big_sym) {
       await session.run(
-        `MATCH (small:smallcategory {id: $id})-[oldRel:BELONGS_TO]->(big:bigcategory {id: $old_category_big_sym})
-         DELETE oldRel
-         WITH small
+        `MATCH (small:smallcategory {id: $id})
          MATCH (newBig:bigcategory {id: $category_big_sym})
          MERGE (small)-[:BELONGS_TO]->(newBig)`,
         {

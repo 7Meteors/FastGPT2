@@ -78,9 +78,7 @@ const CategoryModal = ({
                 ...editData,
                 ...values,
                 ...(editData?.name === values.name ? {} : { oldName: editData?.name }),
-                ...(editData?.category_big_sym === values.category_big_sym
-                  ? {}
-                  : { old_category_big_sym: editData?.category_big_sym })
+                ...(isSmallcategory ? { old_category_big_sym: editData?.category_big_sym } : {})
               });
             } else {
               await (isSmallcategory ? newSmallcategory : newBigcategory)(values);
