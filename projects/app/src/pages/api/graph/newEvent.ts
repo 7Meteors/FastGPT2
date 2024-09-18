@@ -10,37 +10,18 @@ import dayjs from 'dayjs';
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   const session = driver.session();
   try {
-    const { address, category_small_sym, issue, urgency_sym } = req.body as {
+    const {
+      address,
+      category_small_sym = '',
+      issue,
+      urgency_sym
+    } = req.body as {
       address: string;
       category_small_sym?: string;
       issue: string;
       urgency_sym: string;
     };
 
-    // const sameIdNode = await session.run(
-    //   `MATCH (n:smallcategory {id: $id})
-    //   RETURN n`,
-    //   { id, name }
-    // );
-    // if (sameIdNode.records.length) {
-    //   jsonRes(res, {
-    //     code: 501,
-    //     error: '编号重复'
-    //   });
-    //   return;
-    // }
-    // const sameNameNode = await session.run(
-    //   `MATCH (n:smallcategory {name: $name})
-    //   RETURN n`,
-    //   { id, name }
-    // );
-    // if (sameNameNode.records.length) {
-    //   jsonRes(res, {
-    //     code: 501,
-    //     error: '名称重复'
-    //   });
-    //   return;
-    // }
     const nowDate = dayjs();
     const result = await session.run(
       `CREATE (n:event  {issue: $issue, address: $address, urgency_sym: $urgency_sym, category_small_sym: $category_small_sym, created_at:$created_at})

@@ -39,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             issue,
             category_big_sym,
             category_small_sym,
-            created_at: created_at.toStandardDate(),
+            created_at: created_at?.toStandardDate() || '',
             urgency_sym,
             status
           };

@@ -11,7 +11,7 @@
     "initIcon": "node ./scripts/icon/init.js",
     "previewIcon": "node ./scripts/icon/index.js",
     "checkI18n": "node ./scripts/i18n/delete-unused-keys.js",
-    "build-docker": "docker build -f ./projects/app/Dockerfile -t zzh.fastgpt2:v0.0.5 . --build-arg name=app --build-arg proxy=taobao"
+    "build-docker": "docker build -f ./projects/app/Dockerfile -t fast-fangzhou:v0.0.1 . --build-arg name=app --build-arg proxy=taobao"
   },
   "devDependencies": {
     "@chakra-ui/cli": "^2.4.1",

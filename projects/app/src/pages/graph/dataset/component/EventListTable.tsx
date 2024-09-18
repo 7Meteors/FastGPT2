@@ -83,13 +83,14 @@ const EventListTable: React.FC<{
         title: t('graph:dataset.event urgency'),
         dataIndex: 'urgency_sym',
         valueEnum: UrgencyMap,
-        render: (_, record: any) => (
-          <Badge
-            key={record.urgency_sym}
-            color={UrgencyMap[record.urgency_sym].color}
-            text={UrgencyMap[record.urgency_sym].text}
-          />
-        )
+        render: (_, record: any) =>
+          UrgencyMap[record.urgency_sym] ? (
+            <Badge
+              key={record.urgency_sym}
+              color={UrgencyMap[record.urgency_sym].color}
+              text={UrgencyMap[record.urgency_sym].text}
+            />
+          ) : null
       },
       {
         title: t('graph:dataset.event smallcategory'),
@@ -97,7 +98,7 @@ const EventListTable: React.FC<{
         hideInSearch: true,
         render: (_, record: any) => {
           if (categoryData?.smallCategories) {
-            return categoryData?.smallCategories?.[record?.category_small_sym]?.name;
+            return categoryData?.smallCategories?.[record?.category_small_sym]?.name || '-';
           } else {
             return '-';
           }

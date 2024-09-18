@@ -13,8 +13,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     await session.run(
       `MATCH (ev:event) WHERE id(ev)= $id
        MATCH (ev)-[oldRel:ASSOCIATED_TO]->(small:smallcategory)
-		   DELETE oldRel
-       WITH ev
+		   DELETE oldRel`,
+      { id: Number(id) }
+    );
+
+    await session.run(
+      `MATCH (ev:event) WHERE id(ev)= $id
        DELETE ev`,
       { id: Number(id) }
     );
