@@ -22,6 +22,7 @@
     "event created_at": "创建时间",
     "event urgency": "紧急程度",
     "event smallcategory": "所属小类",
+    "event createAt": "创建时间",
     "event bigcategory": "所属大类",
     "event id": "序号",
     "new smallcategory": "新增小类",

@@ -4,7 +4,6 @@ import { jsonRes } from '@fastgpt/service/common/response';
 import { driver } from '@fastgpt/service/common/neo4j/index';
 import { Date } from 'neo4j-driver-core/lib/temporal-types.js';
 import { toNumber } from 'neo4j-driver-core/lib/integer.js';
-
 import dayjs from 'dayjs';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
@@ -14,15 +13,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       address,
       category_small_sym = '',
       issue,
-      urgency_sym
+      urgency_sym,
+      created_at
     } = req.body as {
       address: string;
       category_small_sym?: string;
       issue: string;
       urgency_sym: string;
+      created_at?: string;
     };
 
-    const nowDate = dayjs();
+    const nowDate = dayjs(created_at || undefined);
     const result = await session.run(
       `CREATE (n:event  {issue: $issue, address: $address, urgency_sym: $urgency_sym, category_small_sym: $category_small_sym, created_at:$created_at})
        RETURN n`,
@@ -31,7 +32,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         category_small_sym,
         issue,
         urgency_sym,
-        created_at: new Date(nowDate.get('year'), nowDate.get('month') + 1, nowDate.get('date'))
+        created_at: created_at
+          ? new Date(nowDate.get('year'), nowDate.get('month') + 1, nowDate.get('date'))
+          : 'NULL'
       }
     );
 

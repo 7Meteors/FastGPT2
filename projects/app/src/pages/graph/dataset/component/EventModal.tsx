@@ -1,22 +1,14 @@
 import {
   ModalForm,
-  ProFormDependency,
+  ProFormDatePicker,
   ProFormSelect,
   ProFormText
 } from '@ant-design/pro-components';
 import { useTranslation } from 'next-i18next';
 import { Form, message } from 'antd';
 import { useEffect } from 'react';
-import { editEvent, editNode, newEvent } from '@/web/core/graph/api';
-import { NodeTypeMap } from '../index';
-
-const transToValueEnum = (data: any) => {
-  const result = {} as any;
-  for (let key in data) {
-    result[key] = data[key].label;
-  }
-  return result;
-};
+import { editEvent, newEvent } from '@/web/core/graph/api';
+import dayjs from 'dayjs';
 
 const EventModal = ({
   open,
@@ -40,7 +32,9 @@ const EventModal = ({
   useEffect(() => {
     form.resetFields();
     if (editData) {
-      form.setFieldsValue(editData || {});
+      form.setFieldsValue(
+        { ...editData, created_at: editData?.created_at ? editData.created_at : undefined } || {}
+      );
     }
   }, [editData, form, open]);
 
@@ -58,14 +52,14 @@ const EventModal = ({
           destroyOnClose: true,
           onCancel: onClose
         }}
+        initialValues={{ created_at: dayjs().format('YYYY-MM-DD') }}
         width={400}
         onFinish={async (values: any) => {
           try {
-            console.log('values', values);
-
             if (editData?.id) {
               await editEvent({
-                ...editData,
+                // ...editData,
+                id: editData?.id,
                 ...values,
                 old_category_small_sym: editData?.category_small_sym
               });
@@ -76,7 +70,6 @@ const EventModal = ({
             onFinish();
             return true;
           } catch (error) {
-            // message.error('提交失败');
             return false;
           }
         }}
@@ -102,21 +95,7 @@ const EventModal = ({
           label={t('graph:dataset.event smallcategory')}
           valueEnum={categoryData.smallCategories}
         />
-        {/* <ProFormDependency name={['category_small_sym']}>
-          {({ category_small_sym }) => {
-            return (
-              category_small_sym && (
-                <ProFormSelect
-                  name="category_big_sym"
-                  label={t('graph:dataset.event bigcategory')}
-                  disabled
-                  value={}
-                  valueEnum={categoryData.bigCategories}
-                />
-              )
-            );
-          }}
-        </ProFormDependency> */}
+        <ProFormDatePicker name="created_at" label={t('graph:dataset.event createAt')} />
       </ModalForm>
     )
   );

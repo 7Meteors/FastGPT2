@@ -122,7 +122,7 @@ const EventListTable: React.FC<{
         dataIndex: 'created_at',
         hideInSearch: true,
         render: (_: ReactNode, record: DataSourceType) =>
-          dayjs(record.created_at).format('YYYY-MM-DD')
+          record.created_at ? dayjs(record.created_at).format('YYYY-MM-DD') : '-'
       },
       {
         title: t('graph:dataset.option'),

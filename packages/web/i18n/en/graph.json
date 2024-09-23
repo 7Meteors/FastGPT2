@@ -21,6 +21,7 @@
     "event address": "Address",
     "event urgency": "Urgency",
     "event smallcategory": "Small Category",
+    "event createAt": "CreateTime",
     "event bigcategory": "Big Category",
     "event id": "ID",
     "new smallcategory": "New Smallcategory",
