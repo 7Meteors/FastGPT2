@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         urgency_sym,
         created_at: created_at
           ? new Date(nowDate.get('year'), nowDate.get('month') + 1, nowDate.get('date'))
-          : 'NULL'
+          : null
       }
     );
 

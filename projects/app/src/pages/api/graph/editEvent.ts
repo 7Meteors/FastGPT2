@@ -50,7 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         old_category_small_sym,
         created_at: newDate
           ? new Date(newDate.get('year'), newDate.get('month') + 1, newDate.get('date'))
-          : 'NULL'
+          : null
       }
     );
 
